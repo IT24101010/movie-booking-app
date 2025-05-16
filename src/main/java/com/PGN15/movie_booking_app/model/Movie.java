@@ -42,5 +42,37 @@ public class Movie {
     }
 
 
+    private static String escapeCsvField(String field) {
+        if (field == null) return "" ;
+        if (field.contains(",") || field.contains("\"") || field.contains("\n")) {
+            return "\"" + field.replace("\"", "\"\"") + "\"";
+        }
+        return field;
+    }
+
+
+    public String toCsvString() {
+        String castString = (cast != null && !cast.isEmpty()) ? String.join(";", cast) : "";
+
+        String  escapedSynopsis =  escapeCsvField(synopsis);
+        String escapedPosterUrl  =escapeCsvField(posterUrl) ;
+        String  escapedBannerUrl =escapeCsvField(bannerUrl);
+
+        return String.join(",",
+                escapeCsvField(movieId) ,
+                escapeCsvField(title),
+                escapeCsvField(genre),
+                escapeCsvField(director),
+                escapeCsvField(castString),
+                escapeCsvField(String.valueOf(duration)),
+                escapeCsvField(rating),
+                 escapedSynopsis,
+                escapeCsvField(String.valueOf(price)) ,
+                escapedPosterUrl ,
+                escapedBannerUrl
+        );
+    }
+
+
 
 }
