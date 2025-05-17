@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Multiflex Cinemas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .highlight-booking {
+            animation: highlightAnimation 2s ease-out;
+        }
+        @keyframes highlightAnimation {
+            0% { background-color: rgba(239, 68, 68, 0.3); /* red-500 with opacity */ }
+            100% { background-color: transparent; }
+        }
+    </style>
+</head>
+<body class="bg-zinc-900 text-white font-inter flex flex-col min-h-screen">
+
+<header class="bg-black bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <a href="index.html" class="text-3xl font-oswald font-bold text-red-600">MULTIFLEX</a>
+            <nav class="hidden md:flex space-x-6 items-center">
+                <a href="index.html" class="text-gray-300 hover:text-red-500 transition duration-300">MAIN</a>
+                <a href="index.html#schedules" class="text-gray-300 hover:text-red-500 transition duration-300">SCHEDULES</a>
+                <a href="booking_page.html" class="text-gray-300 hover:text-red-500 transition duration-300">TICKETS</a>
+            </nav>
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="login.html" id="user-action-btn-header" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+                    SIGN IN
+                </a>
+                <div id="user-profile-dropdown-header" class="hidden relative">
+                    <button id="user-avatar-btn-header" class="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div id="dropdown-menu-header" class="hidden absolute right-0 mt-2 w-48 bg-zinc-800 rounded-md shadow-lg py-1 z-50">
+                        <a href="user_profile.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700 font-semibold text-red-500">My Profile</a>
+                        <a href="booking_history.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">My Bookings</a>
+                        <a href="#" id="logout-btn-header" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-300 hover:text-red-500 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-90">
+        <a href="index.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">MAIN</a>
+        <a href="index.html#schedules" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">SCHEDULES</a>
+        <a href="booking_page.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">TICKETS</a>
+        <div class="py-3 px-4">
+            <a href="login.html" id="mobile-user-action-btn-header" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 text-center block">
+                SIGN IN
+            </a>
+            <div id="mobile-user-profile-dropdown-header" class="hidden mt-2">
+                <a href="user_profile.html" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700 font-semibold text-red-500">My Profile</a>
+                <a href="booking_history.html" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">My Bookings</a>
+                <a href="#" id="mobile-logout-btn-header" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 md:pt-32">
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-zinc-800 p-6 sm:p-8 rounded-xl shadow-2xl mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold font-oswald text-white mb-8 text-center border-b border-zinc-700 pb-4">
+                My Profile
+            </h1>
+
+            <div id="flash-message-container" class="mb-6"></div>
+
+            <form id="profile-form" class="space-y-6">
+                <div>
+                    <label for="profile-username" class="block text-sm font-medium text-gray-300 mb-1">Username</label>
+                    <input type="text" name="username" id="profile-username" autocomplete="username" required
+                           class="appearance-none block w-full px-3 py-3 border border-zinc-700 bg-zinc-900 placeholder-gray-500 text-gray-200 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                           placeholder="Your username">
+                </div>
+
+                <div>
+                    <label for="profile-email" class="block text-sm font-medium text-gray-300 mb-1">Email address</label>
+                    <input type="email" name="email" id="profile-email" autocomplete="email" required
+                           class="appearance-none block w-full px-3 py-3 border border-zinc-700 bg-zinc-900 placeholder-gray-500 text-gray-200 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                           placeholder="you@example.com">
+                </div>
+
+                <div>
+                    <label for="profile-contact" class="block text-sm font-medium text-gray-300 mb-1">Contact Number</label>
+                    <input type="tel" name="contactNumber" id="profile-contact" autocomplete="tel"
+                           class="appearance-none block w-full px-3 py-3 border border-zinc-700 bg-zinc-900 placeholder-gray-500 text-gray-200 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                           placeholder="Your contact number (optional)">
+                </div>
+
+                <div class="border-t border-zinc-700 pt-6 space-y-6">
+                    <h3 class="text-lg font-medium leading-6 text-gray-200">Change Password (optional)</h3>
+                    <div>
+                        <label for="profile-current-password" class="block text-sm font-medium text-gray-300 mb-1">Current Password</label>
+                        <input type="password" name="currentPassword" id="profile-current-password" autocomplete="current-password"
+                               class="appearance-none block w-full px-3 py-3 border border-zinc-700 bg-zinc-900 placeholder-gray-500 text-gray-200 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                               placeholder="Enter current password to change">
+                    </div>
+                    <div>
+                        <label for="profile-new-password" class="block text-sm font-medium text-gray-300 mb-1">New Password</label>
+                        <input type="password" name="newPassword" id="profile-new-password" autocomplete="new-password"
+                               class="appearance-none block w-full px-3 py-3 border border-zinc-700 bg-zinc-900 placeholder-gray-500 text-gray-200 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                               placeholder="Enter new password">
+                    </div>
+                    <div>
+                        <label for="profile-confirm-password" class="block text-sm font-medium text-gray-300 mb-1">Confirm New Password</label>
+                        <input type="password" name="confirmNewPassword" id="profile-confirm-password" autocomplete="new-password"
+                               class="appearance-none block w-full px-3 py-3 border border-zinc-700 bg-zinc-900 placeholder-gray-500 text-gray-200 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                               placeholder="Confirm new password">
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button type="submit"
+                            class="group relative flex justify-center py-3 px-6 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-800 focus:ring-red-500 transition duration-300">
+                        Update Profile
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-10 border-t border-red-700 pt-6">
+                <h3 class="text-lg font-medium leading-6 text-gray-200 mb-3">Account Actions</h3>
+                <button id="delete-account-btn"
+                        class="w-full sm:w-auto text-sm text-red-500 hover:text-red-400 hover:bg-red-900 hover:bg-opacity-30 px-4 py-2 rounded-md border border-red-600 transition duration-300">
+                    Delete My Account
+                </button>
+                <p class="text-xs text-gray-500 mt-2">Warning: This action is irreversible.</p>
+            </div>
+        </div>
+
+        <div id="user-bookings-section" class="mt-12 bg-zinc-800 p-6 sm:p-8 rounded-xl shadow-2xl">
+            <h2 class="text-2xl sm:text-3xl font-bold font-oswald text-white mb-6 border-b border-zinc-700 pb-3">
+                My Recent Bookings
+            </h2>
+            <div id="profile-booking-history-list" class="space-y-6">
+                <p id="loading-profile-bookings-msg" class="text-center text-gray-400 py-10">Loading your bookings... <i class="fas fa-spinner fa-spin ml-2"></i></p>
+            </div>
+            <div class="mt-6 text-center">
+                <a href="booking_history.html" class="text-red-500 hover:text-red-400 font-medium text-sm">
+                    View Full Booking History <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-black py-8 border-t border-zinc-800 mt-auto">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+        <a href="index.html" class="text-2xl font-oswald font-bold text-red-600 mb-2 inline-block">MULTIFLEX</a>
+        <p class="text-xs">&copy; <span id="footer-year"></span> Multiflex Cinemas. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script>
+    // Basic Mobile Menu Toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // DOM Elements
+    const profileForm = document.getElementById('profile-form');
+    const usernameInput = document.getElementById('profile-username');
+    const emailInput = document.getElementById('profile-email');
+    const contactInput = document.getElementById('profile-contact');
+    const currentPasswordInput = document.getElementById('profile-current-password');
+    const newPasswordInput = document.getElementById('profile-new-password');
+    const confirmNewPasswordInput = document.getElementById('profile-confirm-password');
+    const deleteAccountBtn = document.getElementById('delete-account-btn');
+    const flashMessageContainer = document.getElementById('flash-message-container');
+
+    // New DOM elements for bookings
+    const profileBookingHistoryList = document.getElementById('profile-booking-history-list');
+    const loadingProfileBookingsMsg = document.getElementById('loading-profile-bookings-msg');
+
+    const API_BASE_URL = '/api';
+    let allMoviesCache = {}; // Cache for movie titles {movieId: "Title"}
+    let allShowtimesCache = {}; // Cache for showtime details {showtimeId: {dateTime, screen, movieId}}
+
+
+    const displayFlashMessage = (message, type = 'success', container) => {
+        const flashDiv = document.createElement('div');
+        flashDiv.className = `p-3 rounded-md text-sm ${type === 'success' ? 'bg-green-600 text-green-100' : 'bg-red-600 text-red-100'}`;
+        flashDiv.textContent = message;
+        container.innerHTML = '';
+        container.appendChild(flashDiv);
+        setTimeout(() => {
+            flashDiv.style.transition = 'opacity 0.5s ease';
+            flashDiv.style.opacity = '0';
+             setTimeout(() => {
+                if (container.contains(flashDiv)) {
+                     container.removeChild(flashDiv);
+                }
+            }, 500);
+        }, 5000);
+    };
+
+
+    // Load User Data
+    const loadUserProfile = async () => {
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+        if (!loggedInUser || !loggedInUser.userId) {
+            displayFlashMessage('You must be logged in to view this page.', 'error', flashMessageContainer);
+            setTimeout(() => window.location.href = 'login.html', 2000);
+            return;
+        }
+
+        try {
+            const userData = loggedInUser; // Using data from localStorage
+
+            if (usernameInput) usernameInput.value = userData.username || '';
+            if (emailInput) emailInput.value = userData.email || '';
+            if (contactInput) contactInput.value = userData.contactNumber || '';
+
+            // After loading profile, load bookings
+            loadUserBookings(loggedInUser.userId);
+
+        } catch (error) {
+            console.error('Error loading profile:', error);
+            displayFlashMessage(error.message || 'Could not load profile data.', 'error', flashMessageContainer);
+        }
+    };
+
+    // Handle Profile Update
+    if (profileForm) {
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!loggedInUser || !loggedInUser.userId) {
+                displayFlashMessage('Authentication error. Please log in again.', 'error', flashMessageContainer);
+                return;
+            }
+
+            const updatedData = {
+                userId: loggedInUser.userId,
+                username: usernameInput.value,
+                email: emailInput.value,
+                contactNumber: contactInput.value,
+            };
+
+            const newPassword = newPasswordInput.value;
+            const confirmNewPassword = confirmNewPasswordInput.value;
+            const currentPassword = currentPasswordInput.value;
+
+            if (newPassword) {
+                if (newPassword !== confirmNewPassword) {
+                    displayFlashMessage('New passwords do not match.', 'error', flashMessageContainer);
+                    return;
+                }
+                if (!currentPassword) {
+                    displayFlashMessage('Current password is required to set a new password.', 'error', flashMessageContainer);
+                    return;
+                }
+                updatedData.password = newPassword;
+                // Backend needs to handle currentPassword for verification if implementing password change
+                // For this example, we assume the /api/users/{userId} PUT might handle it
+                // or you'd have a separate /api/users/change-password endpoint.
+            }
+
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/${loggedInUser.userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedData),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    displayFlashMessage('Profile updated successfully!', 'success', flashMessageContainer);
+                    localStorage.setItem('loggedInUser', JSON.stringify(result));
+                    loadUserProfile();
+                    currentPasswordInput.value = '';
+                    newPasswordInput.value = '';
+                    confirmNewPasswordInput.value = '';
+                    checkLoginStateHeader();
+                } else {
+                    displayFlashMessage(result.message || 'Failed to update profile.', 'error', flashMessageContainer);
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                displayFlashMessage('An error occurred. Please try again.', 'error', flashMessageContainer);
+            }
+        });
+    }
+
+    // Handle Account Deletion
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', async () => {
+            // ... (same as before) ...
+             if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                return;
+            }
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (!loggedInUser || !loggedInUser.userId) {
+                displayFlashMessage('Authentication error.', 'error', flashMessageContainer);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/${loggedInUser.userId}`, {
+                    method: 'DELETE',
+                });
+
+                if (response.ok || response.status === 204) {
+                    displayFlashMessage('Account deleted successfully. Redirecting...', 'success', flashMessageContainer);
+                    localStorage.removeItem('loggedInUser');
+                    localStorage.removeItem('authToken');
+                    setTimeout(() => window.location.href = 'index.html', 2000);
+                } else {
+                    const result = await response.json().catch(() => ({}));
+                    displayFlashMessage(result.message || 'Failed to delete account.', 'error', flashMessageContainer);
+                }
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                displayFlashMessage('An error occurred. Please try again.', 'error', flashMessageContainer);
+            }
+        });
+    }
+
+    // --- Functions for User Bookings on Profile Page ---
+    const preloadRelatedDataForBookings = async () => {
+        try {
+            const [moviesRes, showtimesRes] = await Promise.all([
+                fetch(`${API_BASE_URL}/movies`),
+                fetch(`${API_BASE_URL}/showtimes`)
+            ]);
+
+            if (moviesRes.ok) {
+                const movies = await moviesRes.json();
+                movies.forEach(movie => allMoviesCache[movie.movieId] = movie.title);
+            } else { console.warn("Failed to load movie cache for profile bookings."); }
+
+            if (showtimesRes.ok) {
+                const showtimes = await showtimesRes.json();
+                showtimes.forEach(st => allShowtimesCache[st.showtimeId] = {
+                    dateTime: st.dateTime,
+                    screen: st.screenOrAuditorium,
+                    movieId: st.movieId
+                });
+            } else { console.warn("Failed to load showtime cache for profile bookings.");}
+        } catch (error) {
+            console.error("Error preloading related data for profile bookings:", error);
+        }
+    };
+
+    const loadUserBookings = async (userId) => {
+        if (!userId) return;
+        loadingProfileBookingsMsg.classList.remove('hidden');
+        profileBookingHistoryList.innerHTML = ''; // Clear previous
+
+        try {
+            await preloadRelatedDataForBookings(); // Ensure cache is ready
+
+            const response = await fetch(`${API_BASE_URL}/bookings/user/${userId}`);
+            if (!response.ok) throw new Error('Failed to load your bookings.');
+            const bookings = await response.json();
+            renderProfileBookings(bookings);
+        } catch (error) {
+            console.error('Error loading user bookings for profile:', error);
+            displayFlashMessage(error.message || 'Could not load your bookings.', 'error', flashMessageContainer); // Use main flash
+            profileBookingHistoryList.innerHTML = `<p class="text-center text-red-400 py-5">${error.message || 'Could not load your bookings.'}</p>`;
+        } finally {
+            loadingProfileBookingsMsg.classList.add('hidden');
+        }
+    };
+
+    const renderProfileBookings = (bookings) => {
+        if (!profileBookingHistoryList) return;
+        if (bookings.length === 0) {
+            profileBookingHistoryList.innerHTML = '<p class="text-center text-gray-400 py-5">You have no recent bookings.</p>';
+            return;
+        }
+
+        // Show only a few recent bookings, e.g., the latest 3
+        const recentBookings = bookings.sort((a,b) => new Date(b.bookingTimestamp) - new Date(a.bookingTimestamp)).slice(0, 3);
+
+        profileBookingHistoryList.innerHTML = recentBookings.map(booking => {
+            const showtimeDetails = allShowtimesCache[booking.showtimeId] || { dateTime: 'N/A', screen: 'N/A', movieId: null };
+            const movieTitle = showtimeDetails.movieId ? (allMoviesCache[showtimeDetails.movieId] || 'Unknown Movie') : 'Unknown Movie';
+
+            const formattedShowtime = showtimeDetails.dateTime !== 'N/A'
+                ? new Date(showtimeDetails.dateTime).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                : 'Details not available';
+
+            const seats = booking.seatsBooked && booking.seatsBooked.length > 0 ? booking.seatsBooked.join(', ') : booking.numberOfSeats + ' ticket(s)';
+
+            return `
+                <div class="booking-item-profile bg-zinc-700 p-4 rounded-md shadow-md">
+                    <h4 class="text-md font-semibold text-red-400 mb-1">${movieTitle}</h4>
+                    <p class="text-xs text-gray-300">Showtime: ${formattedShowtime} (Screen: ${showtimeDetails.screen || 'N/A'})</p>
+                    <p class="text-xs text-gray-300">Seats: ${seats}</p>
+                    <p class="text-xs text-gray-400 mt-1">Booked on: ${new Date(booking.bookingTimestamp).toLocaleDateString()}</p>
+                    <p class="text-sm font-semibold text-gray-200 mt-1">Total: $${booking.totalPrice.toFixed(2)}</p>
+                </div>
+            `;
+        }).join('');
+    };
+
+
+    // --- Header Auth State (Simplified) ---
+    const userActionButtonHeader = document.getElementById('user-action-btn-header');
+    const mobileUserActionButtonHeader = document.getElementById('mobile-user-action-btn-header');
+    const userProfileDropdownHeader = document.getElementById('user-profile-dropdown-header');
+    const mobileUserProfileDropdownHeader = document.getElementById('mobile-user-profile-dropdown-header');
+    const userAvatarButtonHeader = document.getElementById('user-avatar-btn-header');
+    const dropdownMenuHeader = document.getElementById('dropdown-menu-header');
+    const logoutButtonHeader = document.getElementById('logout-btn-header');
+    const mobileLogoutButtonHeader = document.getElementById('mobile-logout-btn-header');
+
+    const checkLoginStateHeader = () => {
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+        if (loggedInUser) {
+            if(userActionButtonHeader) userActionButtonHeader.classList.add('hidden');
+            if(mobileUserActionButtonHeader) mobileUserActionButtonHeader.classList.add('hidden');
+            if(userProfileDropdownHeader) userProfileDropdownHeader.classList.remove('hidden');
+            if(mobileUserProfileDropdownHeader) mobileUserProfileDropdownHeader.classList.remove('hidden');
+
+            if(userAvatarButtonHeader && loggedInUser.username) {
+                userAvatarButtonHeader.innerHTML = `<span class="text-lg font-semibold">${loggedInUser.username.charAt(0).toUpperCase()}</span>`;
+            }
+            dropdownMenuHeader.querySelectorAll('a').forEach(link => {
+                if (link.getAttribute('href') === 'user_profile.html') { // Corrected from profile.html
+                    link.classList.add('font-semibold', 'text-red-500');
+                } else {
+                    link.classList.remove('font-semibold', 'text-red-500');
+                }
+            });
+        } else {
+            if(userActionButtonHeader) userActionButtonHeader.classList.remove('hidden');
+            if(mobileUserActionButtonHeader) mobileUserActionButtonHeader.classList.remove('hidden');
+            if(userProfileDropdownHeader) userProfileDropdownHeader.classList.add('hidden');
+            if(mobileUserProfileDropdownHeader) mobileUserProfileDropdownHeader.classList.add('hidden');
+        }
+    };
+    const handleLogoutHeader = () => {
+        localStorage.removeItem('loggedInUser');
+        localStorage.removeItem('authToken');
+        checkLoginStateHeader();
+        displayFlashMessage('Logged out successfully. Redirecting...', 'success', flashMessageContainer);
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+    };
+
+    if (userAvatarButtonHeader && dropdownMenuHeader) {
+        userAvatarButtonHeader.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenuHeader.classList.toggle('hidden');
+        });
+    }
+    document.addEventListener('click', (e) => {
+        if (userAvatarButtonHeader && dropdownMenuHeader && !userAvatarButtonHeader.contains(e.target) && !dropdownMenuHeader.contains(e.target)) {
+            dropdownMenuHeader.classList.add('hidden');
+        }
+    });
+    if(logoutButtonHeader) logoutButtonHeader.addEventListener('click', handleLogoutHeader);
+    if(mobileLogoutButtonHeader) mobileLogoutButtonHeader.addEventListener('click', handleLogoutHeader);
+
+    // Initial Load
+    checkLoginStateHeader();
+    loadUserProfile(); // This will now also trigger loadUserBookings
+
+</script>
+</body>
+</html>
