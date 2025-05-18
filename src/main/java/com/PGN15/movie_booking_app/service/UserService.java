@@ -1,7 +1,7 @@
-package com.hiruna.movieticketbooking.service;
+package com.PGN15.movieticketbooking.service;
 
-import com.hiruna.movieticketbooking.model.User;
-import com.hiruna.movieticketbooking.repository.FileHandler;
+import com.PGN15.movieticketbooking.model.User;
+import com.PGN15.movieticketbooking.repository.FileHandler;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
