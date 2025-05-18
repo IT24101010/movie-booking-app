@@ -55,7 +55,7 @@ public class BaseUser {
 
     //Deserialization
     //CSV string back into a BaseUser object by splitting the string
-    public static com.hiruna.movieticketbooking.model.BaseUser fromCsvString(String csvString) {
+    public static com.PGN15.movieticketbooking.model.BaseUser fromCsvString(String csvString) {
         if (csvString == null || csvString.trim().isEmpty()) {
             return null;
         }
@@ -65,7 +65,7 @@ public class BaseUser {
             return null;
         }
         //return new BaseUser
-        return new com.hiruna.movieticketbooking.model.BaseUser(parts[0], parts[1], parts[2], parts[3], parts[4]);
+        return new com.PGN15.movieticketbooking.model.BaseUser(parts[0], parts[1], parts[2], parts[3], parts[4]);
     }
 
     /**
