@@ -2,8 +2,7 @@ package com.PGN15.movie_booking_app.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-// If you use @AllArgsConstructor, ensure it's aware of the new field or manually update constructors.
-// import lombok.AllArgsConstructor;
+
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
