@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Tickets - Multiflex Cinemas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .seat {
+            width: 30px; height: 30px; margin: 3px;
+            background-color: #4a5568; /* zinc-600 */
+            border-radius: 5px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .seat.selected { background-color: #ef4444; /* red-500 */ color: white; }
+        .seat.occupied { background-color: #1f2937; /* zinc-800 */ cursor: not-allowed; color: #4b5563; }
+        .seat.gap { background-color: transparent; cursor: default; }
+        .screen-line {
+            width: 80%; height: 10px; background-color: #e5e7eb; /* gray-200 */
+            margin: 20px auto; border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body class="bg-zinc-900 text-white font-inter flex flex-col min-h-screen">
+
+<header class="bg-black bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <a href="index.html" class="text-3xl font-oswald font-bold text-red-600">MULTIFLEX</a>
+            <nav class="hidden md:flex space-x-6 items-center">
+                <a href="index.html" class="text-gray-300 hover:text-red-500 transition duration-300">MAIN</a>
+                <a href="booking_history.html" class="text-gray-300 hover:text-red-500 transition duration-300">MY BOOKINGS</a>
+                <a href="view_showtimes.html" class="text-gray-300 hover:text-red-500 transition duration-300">SCHEDULES</a>
+                <a href="booking_page.html" class="text-red-500 font-semibold transition duration-300">TICKETS</a>
+            </nav>
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="login.html" id="user-action-btn-header" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+                    SIGN IN
+                </a>
+                <div id="user-profile-dropdown-header" class="hidden relative">
+                    <button id="user-avatar-btn-header" class="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div id="dropdown-menu-header" class="hidden absolute right-0 mt-2 w-48 bg-zinc-800 rounded-md shadow-lg py-1 z-50">
+                        <a href="user_profile.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">My Profile</a>
+                        <a href="booking_history.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">My Bookings</a>
+                        <a href="#" id="logout-btn-header" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-300 hover:text-red-500 focus:outline-none"><i class="fas fa-bars text-2xl"></i></button>
+            </div>
+        </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-90">
+        <a href="index.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">MAIN</a>
+        <a href="view_showtimes.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">SCHEDULES</a>
+        <a href="booking_page.html" class="block py-3 px-4 text-sm text-red-500 font-semibold hover:bg-zinc-700">TICKETS</a>
+        <div class="py-3 px-4">
+            <a href="login.html" id="mobile-user-action-btn-header" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 text-center block">SIGN IN</a>
+            <div id="mobile-user-profile-dropdown-header" class="hidden mt-2">
+                <a href="user_profile.html" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">My Profile</a>
+                <a href="booking_history.html" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">My Bookings</a>
+                <a href="#" id="mobile-logout-btn-header" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 md:pt-32">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl sm:text-4xl font-bold font-oswald text-white mb-8 text-center border-b border-zinc-700 pb-4">
+            Book Your Tickets
+        </h1>
+
+        <div id="flash-message-container" class="mb-6"></div>
+
+        <section id="step-1-selection" class="bg-zinc-800 p-6 sm:p-8 rounded-xl shadow-2xl mb-8">
+            <h2 class="text-2xl font-oswald text-red-500 mb-4">Step 1: Select Movie & Showtime</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="booking-movie-select" class="block text-sm font-medium text-gray-300 mb-1">Choose a Movie:</label>
+                    <select id="booking-movie-select" name="movieId" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500">
+                        <option value="" disabled selected>Loading movies...</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="booking-showtime-select" class="block text-sm font-medium text-gray-300 mb-1">Choose a Showtime:</label>
+                    <select id="booking-showtime-select" name="showtimeId" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500" disabled>
+                        <option value="" disabled selected>Select a movie first</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-gray-400" id="selected-showtime-details">
+            </div>
+            <div class="mt-2 text-sm text-red-400 font-semibold" id="ticket-price-display">
+            </div>
+        </section>
+
+        <section id="step-2-seat-selection" class="bg-zinc-800 p-6 sm:p-8 rounded-xl shadow-2xl mb-8 hidden">
+            <h2 class="text-2xl font-oswald text-red-500 mb-1">Step 2: Select Your Seats</h2>
+            <p class="text-xs text-gray-500 mb-4">Click on available seats to select. Click again to deselect.</p>
+            <div class="screen-line mb-6"></div>
+            <div id="seat-map-container" class="flex flex-col items-center overflow-x-auto pb-4">
+                <p class="text-gray-400">Loading seat map...</p>
+            </div>
+            <div class="flex justify-center space-x-4 my-4 text-xs">
+                <div><span class="seat inline-block !w-4 !h-4 !m-0"></span> Available</div>
+                <div><span class="seat selected inline-block !w-4 !h-4 !m-0"></span> Selected</div>
+                <div><span class="seat occupied inline-block !w-4 !h-4 !m-0"></span> Occupied</div>
+            </div>
+        </section>
+
+        <section id="step-3-summary" class="bg-zinc-800 p-6 sm:p-8 rounded-xl shadow-2xl hidden">
+            <h2 class="text-2xl font-oswald text-red-500 mb-4">Step 3: Booking Summary</h2>
+            <div id="booking-summary-details" class="space-y-3 text-gray-300">
+                <p><strong>Movie:</strong> <span id="summary-movie-title"></span></p>
+                <p><strong>Showtime:</strong> <span id="summary-showtime-datetime"></span> (<span id="summary-showtime-screen"></span>)</p>
+                <p><strong>Selected Seats:</strong> <span id="summary-selected-seats" class="font-semibold text-red-400"></span></p>
+                <p><strong>Number of Tickets:</strong> <span id="summary-num-tickets"></span></p>
+                <p class="text-xl"><strong>Total Price:</strong> $<span id="summary-total-price" class="font-bold">0.00</span></p>
+            </div>
+            <button id="confirm-booking-btn" class="mt-6 w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 text-lg">
+                Confirm & Book Tickets
+            </button>
+        </section>
+    </div>
+</main>
+
+<footer class="bg-black py-8 border-t border-zinc-800 mt-auto">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+        <a href="index.html" class="text-2xl font-oswald font-bold text-red-600 mb-2 inline-block">MULTIFLEX</a>
+        <p class="text-xs">&copy; <span id="footer-year"></span> Multiflex Cinemas. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script src="js/booking.js"></script>
+</body>
+</html>
