@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Movies - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-zinc-900 text-white font-inter flex flex-col min-h-screen">
+
+<header class="bg-black bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <a href="admin_dashboard.html" class="text-3xl font-oswald font-bold text-red-600">MULTIFLEX <span class="text-lg text-gray-400">Admin</span></a>
+            <nav class="hidden md:flex space-x-6 items-center">
+                <a href="admin_dashboard.html" class="text-gray-300 hover:text-red-500 transition duration-300">Dashboard</a>
+                <a href="index.html" class="text-gray-300 hover:text-red-500 transition duration-300">View Site</a>
+            </nav>
+            <div class="hidden md:flex items-center space-x-4">
+                <div id="admin-profile-dropdown-header" class="hidden relative">
+                    <button id="admin-avatar-btn-header" class="w-10 h-10 rounded-full bg-red-700 text-white flex items-center justify-center ring-2 ring-red-500"><i class="fas fa-shield-halved"></i></button>
+                    <div id="admin-dropdown-menu-header" class="hidden absolute right-0 mt-2 w-48 bg-zinc-800 rounded-md shadow-lg py-1 z-50">
+                        <span id="admin-username-display" class="block px-4 py-2 text-sm text-gray-400 italic">Admin</span>
+                        <a href="#" id="admin-logout-btn-header" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+                    </div>
+                </div>
+                <a href="admin_login.html" id="admin-login-btn-header" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">ADMIN LOGIN</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-300 hover:text-red-500 focus:outline-none"><i class="fas fa-bars text-2xl"></i></button>
+            </div>
+        </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-90">
+        <a href="admin_dashboard.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">Dashboard</a>
+        <a href="index.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">View Site</a>
+    </div>
+</header>
+
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 md:pt-32">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl sm:text-4xl font-bold font-oswald text-white">Manage Movies</h1>
+        <button id="add-movie-btn" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 flex items-center">
+            <i class="fas fa-plus mr-2"></i> Add New Movie
+        </button>
+    </div>
+
+    <div id="flash-message-container" class="mb-6"></div>
+    <div id="admin-movies-content-area" class="bg-zinc-800 p-2 sm:p-6 rounded-xl shadow-2xl overflow-x-auto">
+        <table class="min-w-full divide-y divide-zinc-700">
+            <thead class="bg-zinc-700">
+            <tr>
+                <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Poster</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Title</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Genre</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Release Date</th> <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Price</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Duration</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Rating</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+            </tr>
+            </thead>
+            <tbody id="movies-table-body" class="bg-zinc-800 divide-y divide-zinc-700">
+            <tr><td colspan="8" class="text-center py-10 text-gray-400" id="loading-movies-indicator">Loading movies... <i class="fas fa-spinner fa-spin ml-2"></i></td></tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div id="movie-modal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-[60] hidden p-4">
+    <div class="bg-zinc-800 p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 id="modal-title" class="text-2xl font-oswald font-semibold">Add New Movie</h2>
+            <button id="close-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+        </div>
+        <form id="movie-form" class="space-y-4">
+            <input type="hidden" id="movie-id" name="movieId">
+            <div>
+                <label for="movie-title" class="block text-sm font-medium text-gray-300 mb-1">Title</label>
+                <input type="text" id="movie-title" name="title" required class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500">
+            </div>
+            <div>
+                <label for="movie-synopsis" class="block text-sm font-medium text-gray-300 mb-1">Synopsis</label>
+                <textarea id="movie-synopsis" name="synopsis" rows="3" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500"></textarea>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="movie-genre" class="block text-sm font-medium text-gray-300 mb-1">Genre</label>
+                    <input type="text" id="movie-genre" name="genre" required class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500" placeholder="e.g., Action, Comedy">
+                </div>
+                <div>
+                    <label for="movie-director" class="block text-sm font-medium text-gray-300 mb-1">Director</label>
+                    <input type="text" id="movie-director" name="director" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500">
+                </div>
+            </div>
+            <div>
+                <label for="movie-cast" class="block text-sm font-medium text-gray-300 mb-1">Cast (comma-separated, Optional)</label>
+                <input type="text" id="movie-cast" name="cast" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500" placeholder="e.g., Actor 1, Actor 2">
+            </div>
+            <div>
+                <label for="movie-release-date" class="block text-sm font-medium text-gray-300 mb-1">Release Date</label>
+                <input type="date" id="movie-release-date" name="releaseDate" required
+                       class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500"
+                       style="color-scheme: dark;">
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label for="movie-duration" class="block text-sm font-medium text-gray-300 mb-1">Duration (minutes)</label>
+                    <input type="number" id="movie-duration" name="duration" required min="1" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500">
+                </div>
+                <div>
+                    <label for="movie-rating" class="block text-sm font-medium text-gray-300 mb-1">Rating (e.g., PG-13)</label>
+                    <input type="text" id="movie-rating" name="rating" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500">
+                </div>
+                <div>
+                    <label for="movie-price" class="block text-sm font-medium text-gray-300 mb-1">Ticket Price ($)</label>
+                    <input type="number" id="movie-price" name="price" required step="0.01" min="0" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500" placeholder="e.g., 10.50">
+                </div>
+            </div>
+            <div>
+                <label for="movie-poster-url" class="block text-sm font-medium text-gray-300 mb-1">Poster Image URL</label>
+                <input type="url" id="movie-poster-url" name="posterUrl" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500" placeholder="https://example.com/poster.jpg">
+            </div>
+            <div>
+                <label for="movie-banner-url" class="block text-sm font-medium text-gray-300 mb-1">Banner Image URL (Optional)</label>
+                <input type="url" id="movie-banner-url" name="bannerUrl" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500" placeholder="https://example.com/banner.jpg">
+            </div>
+
+            <div id="modal-flash-message" class="mt-2"></div>
+
+            <div class="flex justify-end space-x-3 pt-3">
+                <button type="button" id="cancel-modal-btn" class="bg-zinc-600 hover:bg-zinc-500 text-gray-200 py-2 px-4 rounded-md text-sm">Cancel</button>
+                <button type="submit" id="save-movie-btn" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md text-sm">Save Movie</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<footer class="bg-black py-8 border-t border-zinc-800 mt-auto">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+        <p class="text-xs">&copy; <span id="footer-year"></span> Multiflex Cinemas Admin Panel.</p>
+    </div>
+</footer>
+
+<script>
+    // Basic Mobile Menu Toggle & Year
+    // ... (keep existing basic setup JS: mobile menu, footer year) ...
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    }
+
+    // DOM Elements
+    const moviesTableBody = document.getElementById('movies-table-body');
+    const addMovieBtn = document.getElementById('add-movie-btn');
+    const movieModal = document.getElementById('movie-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const cancelModalBtn = document.getElementById('cancel-modal-btn');
+    const movieForm = document.getElementById('movie-form');
+    const modalTitle = document.getElementById('modal-title');
+    const movieIdInput = document.getElementById('movie-id'); // Hidden input for movie ID in form
+    const movieReleaseDateInput = document.getElementById('movie-release-date'); // Specific input for release date
+    const flashMessageContainer = document.getElementById('flash-message-container');
+    const modalFlashMessageContainer = document.getElementById('modal-flash-message');
+    const loadingMoviesIndicator = document.getElementById('loading-movies-indicator');
+
+    const API_BASE_URL = '/api/movies';
+
+    // --- Admin Auth & Header ---
+    // ... (keep existing admin auth JS from previous admin pages) ...
+    const adminLoginBtnHeader = document.getElementById('admin-login-btn-header');
+    const adminProfileDropdownHeader = document.getElementById('admin-profile-dropdown-header');
+    const adminAvatarBtnHeader = document.getElementById('admin-avatar-btn-header');
+    const adminDropdownMenuHeader = document.getElementById('admin-dropdown-menu-header');
+    const adminLogoutBtnHeader = document.getElementById('admin-logout-btn-header');
+    const adminUsernameDisplay = document.getElementById('admin-username-display');
+
+    const checkAdminLoginState = () => {
+        const loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin'));
+        if (loggedInAdmin && (loggedInAdmin.role === 'ADMIN' || loggedInAdmin.adminRole)) {
+            if(adminLoginBtnHeader) adminLoginBtnHeader.classList.add('hidden');
+            if(adminProfileDropdownHeader) adminProfileDropdownHeader.classList.remove('hidden');
+            if(adminUsernameDisplay && loggedInAdmin.username) adminUsernameDisplay.textContent = loggedInAdmin.username;
+            return true;
+        } else {
+            if(adminLoginBtnHeader) adminLoginBtnHeader.classList.remove('hidden');
+            if(adminProfileDropdownHeader) adminProfileDropdownHeader.classList.add('hidden');
+            if(document.getElementById('admin-movies-content-area')) {
+                document.getElementById('admin-movies-content-area').innerHTML = `<div class="text-center py-10 bg-zinc-700 rounded-lg"><p class="text-xl text-red-400">Access Denied. Redirecting to login...</p></div>`;
+            }
+            setTimeout(() => { window.location.href = 'admin_login.html'; }, 2000);
+            return false;
+        }
+    };
+    const handleAdminLogout = () => {
+        localStorage.removeItem('loggedInAdmin');
+        window.location.href = 'admin_login.html';
+    };
+    if (adminAvatarBtnHeader && adminDropdownMenuHeader) {
+        adminAvatarBtnHeader.addEventListener('click', (e) => {
+            e.stopPropagation();
+            adminDropdownMenuHeader.classList.toggle('hidden');
+        });
+    }
+    document.addEventListener('click', (e) => {
+        if (adminAvatarBtnHeader && adminDropdownMenuHeader && !adminAvatarBtnHeader.contains(e.target) && !adminDropdownMenuHeader.contains(e.target)) {
+            adminDropdownMenuHeader.classList.add('hidden');
+        }
+    });
+    if(adminLogoutBtnHeader) adminLogoutBtnHeader.addEventListener('click', handleAdminLogout);
+    // --- End Admin Auth ---
+
+    const displayFlash = (message, type = 'success', container = flashMessageContainer) => {
+        // ... (keep existing displayFlash function) ...
+        container.innerHTML = `<div class="p-3 rounded-md text-sm ${type === 'success' ? 'bg-green-600 text-green-100' : 'bg-red-600 text-red-100'}">${message}</div>`;
+        setTimeout(() => container.innerHTML = '', 5000);
+    };
+
+    const loadMovies = async () => {
+        if (!checkAdminLoginState()) return;
+        // ... (keep existing loadMovies start: loading indicator, clear table) ...
+        if(loadingMoviesIndicator) loadingMoviesIndicator.classList.remove('hidden');
+        if(moviesTableBody) moviesTableBody.innerHTML = '<tr><td colspan="8" class="text-center py-10 text-gray-400">Loading movies... <i class="fas fa-spinner fa-spin ml-2"></i></td></tr>';
+
+
+        try {
+            const response = await fetch(API_BASE_URL);
+            if (!response.ok) throw new Error('Failed to fetch movies.');
+            const movies = await response.json();
+            renderMoviesTable(movies);
+        } catch (error) {
+            console.error('Error loading movies:', error);
+            // ... (keep existing error handling for loadMovies) ...
+            if(moviesTableBody) moviesTableBody.innerHTML = `<tr><td colspan="8" class="text-center py-10 text-red-400">${error.message}</td></tr>`;
+        } finally {
+            // ... (keep existing finally block for loadMovies) ...
+            if(loadingMoviesIndicator) loadingMoviesIndicator.classList.add('hidden');
+        }
+    };
+
+    const renderMoviesTable = (movies) => {
+        if (!moviesTableBody) return;
+        if (movies.length === 0) {
+            // Updated colspan to 8
+            moviesTableBody.innerHTML = '<tr><td colspan="8" class="text-center py-10 text-gray-400">No movies found.</td></tr>';
+            return;
+        }
+        moviesTableBody.innerHTML = movies.map(movie => {
+            const posterSrc = movie.posterUrl || `https://placehold.co/50x75/718096/ffffff?text=${encodeURIComponent(movie.title ? movie.title.substring(0,3) : 'N/A')}`;
+            let releaseDateFormatted = 'N/A';
+            if (movie.releaseDate) {
+                try {
+                    // Assuming movie.releaseDate is "YYYY-MM-DD"
+                    const [year, month, day] = movie.releaseDate.split('-');
+                    const dateObj = new Date(year, month - 1, day);
+                     if (!isNaN(dateObj)) {
+                        releaseDateFormatted = dateObj.toLocaleDateString('en-CA'); // YYYY-MM-DD format, good for consistency
+                    }
+                } catch (e) { console.error("Error formatting release date for table:", movie.releaseDate, e); }
+            }
+            const price = movie.price !== undefined && movie.price !== null ? movie.price.toFixed(2) : 'N/A';
+
+
+            return `
+                <tr class="hover:bg-zinc-700/50 transition-colors duration-150" data-movie-id="${movie.movieId}">
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <img src="${posterSrc}" alt="${movie.title || 'Poster'}" class="w-12 h-18 object-cover rounded"
+                             onerror="this.onerror=null; this.src='https://placehold.co/50x75/718096/ffffff?text=Err';">
+                    </td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-200">${movie.title || 'Untitled'}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">${movie.genre || 'N/A'}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">${releaseDateFormatted}</td> <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">$${price}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">${movie.duration ? movie.duration + ' min' : 'N/A'}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">${movie.rating || 'N/A'}</td>
+                    <td class="px-6 py-3 whitespace-nowrap text-sm font-medium">
+                        <button class="edit-btn text-sky-400 hover:text-sky-300 mr-3" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="delete-btn text-red-500 hover:text-red-400" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        // Re-attach event listeners
+        moviesTableBody.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => handleEditMovie(e.currentTarget.closest('tr').dataset.movieId));
+        });
+        moviesTableBody.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => handleDeleteMovie(e.currentTarget.closest('tr').dataset.movieId));
+        });
+    };
+
+    const setupModal = () => {
+        // ... (keep existing setupModal function, ensure releaseDate field is reset) ...
+        if(addMovieBtn) addMovieBtn.addEventListener('click', () => {
+            if(movieForm) movieForm.reset();
+            if(movieIdInput) movieIdInput.value = '';
+            if(modalTitle) modalTitle.textContent = 'Add New Movie';
+            if(movieReleaseDateInput) movieReleaseDateInput.value = ''; // Reset release date
+            if(document.getElementById('movie-poster-url')) document.getElementById('movie-poster-url').value = '';
+            if(document.getElementById('movie-banner-url')) document.getElementById('movie-banner-url').value = '';
+            if(document.getElementById('movie-price')) document.getElementById('movie-price').value = '';
+            if(modalFlashMessageContainer) modalFlashMessageContainer.innerHTML = '';
+            if(movieModal) movieModal.classList.remove('hidden');
+        });
+        if(closeModalBtn) closeModalBtn.addEventListener('click', () => movieModal.classList.add('hidden'));
+        if(cancelModalBtn) cancelModalBtn.addEventListener('click', () => movieModal.classList.add('hidden'));
+        if(movieModal) movieModal.addEventListener('click', (e) => {
+            if (e.target === movieModal) movieModal.classList.add('hidden');
+        });
+    };
+    setupModal(); // Call it
+
+    const populateEditForm = (movie) => {
+        // ... (keep existing populateEditForm function, add releaseDate population) ...
+        if(movieForm) movieForm.reset();
+        if(modalTitle) modalTitle.textContent = 'Edit Movie';
+        if(movieIdInput) movieIdInput.value = movie.movieId;
+        if(document.getElementById('movie-title')) document.getElementById('movie-title').value = movie.title || '';
+        if(document.getElementById('movie-synopsis')) document.getElementById('movie-synopsis').value = movie.synopsis || '';
+        if(document.getElementById('movie-genre')) document.getElementById('movie-genre').value = movie.genre || '';
+        if(document.getElementById('movie-director')) document.getElementById('movie-director').value = movie.director || '';
+        if(document.getElementById('movie-cast')) document.getElementById('movie-cast').value = movie.cast ? movie.cast.join(', ') : '';
+        if(movieReleaseDateInput) movieReleaseDateInput.value = movie.releaseDate || ''; // Populate release date
+        if(document.getElementById('movie-duration')) document.getElementById('movie-duration').value = movie.duration || '';
+        if(document.getElementById('movie-rating')) document.getElementById('movie-rating').value = movie.rating || '';
+        if(document.getElementById('movie-price')) document.getElementById('movie-price').value = movie.price !== undefined && movie.price !== null ? movie.price.toFixed(2) : '';
+        if(document.getElementById('movie-poster-url')) document.getElementById('movie-poster-url').value = movie.posterUrl || '';
+        if(document.getElementById('movie-banner-url')) document.getElementById('movie-banner-url').value = movie.bannerUrl || '';
+        if(modalFlashMessageContainer) modalFlashMessageContainer.innerHTML = '';
+        if(movieModal) movieModal.classList.remove('hidden');
+    };
+
+    if(movieForm) movieForm.addEventListener('submit', async (e) => {
+        // ... (ensure movieData includes releaseDate from movieReleaseDateInput.value) ...
+        e.preventDefault();
+        const formData = new FormData(movieForm);
+        const movieData = Object.fromEntries(formData.entries()); // This will include releaseDate
+
+        if (movieData.cast && typeof movieData.cast === 'string') {
+            movieData.cast = movieData.cast.trim() ? movieData.cast.split(',').map(actor => actor.trim()).filter(actor => actor) : [];
+        } else {
+            movieData.cast = [];
+        }
+        movieData.duration = parseInt(movieData.duration, 10);
+        movieData.price = parseFloat(movieData.price);
+
+        // releaseDate is already a string "YYYY-MM-DD" from the input type="date"
+        // Spring Boot will convert it to LocalDate on the backend if type matches.
+
+        movieData.posterUrl = movieData.posterUrl || null;
+        movieData.bannerUrl = movieData.bannerUrl || null;
+
+        const currentMovieId = movieIdInput.value;
+        const method = currentMovieId ? 'PUT' : 'POST';
+        const url = currentMovieId ? `${API_BASE_URL}/${currentMovieId}` : API_BASE_URL;
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(movieData)
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                const errorMessage = result && result.message ? result.message : `Failed to ${currentMovieId ? 'update' : 'add'} movie. Status: ${response.status}`;
+                throw new Error(errorMessage);
+            }
+            displayFlash(`${currentMovieId ? 'Movie updated' : 'Movie added'} successfully!`, 'success', modalFlashMessageContainer);
+            loadMovies();
+            if(movieModal) setTimeout(() => movieModal.classList.add('hidden'), 1500);
+        } catch (error) {
+            console.error(`Error ${currentMovieId ? 'updating' : 'adding'} movie:`, error);
+            displayFlash(error.message, 'error', modalFlashMessageContainer);
+        }
+    });
+
+    const handleEditMovie = async (id) => {
+        // ... (keep existing handleEditMovie function) ...
+        try {
+            const response = await fetch(`${API_BASE_URL}/${id}`);
+            if (!response.ok) throw new Error('Failed to fetch movie details for editing.');
+            const movie = await response.json();
+            populateEditForm(movie);
+        } catch (error) {
+            console.error('Error fetching movie for edit:', error);
+            displayFlash(error.message, 'error');
+        }
+    };
+
+    const handleDeleteMovie = async (id) => {
+        // ... (keep existing handleDeleteMovie function) ...
+        if (!confirm('Are you sure you want to delete this movie? This action cannot be undone.')) return;
+        try {
+            const response = await fetch(`${API_BASE_URL}/${id}`, { method: 'DELETE' });
+            if (!response.ok && response.status !== 204) { // 204 No Content is also a success for DELETE
+                const errorData = await response.json().catch(() => ({})); // Try to parse error, fallback to empty obj
+                throw new Error(errorData.message || 'Failed to delete movie.');
+            }
+            displayFlash('Movie deleted successfully!', 'success');
+            loadMovies();
+        } catch (error) {
+            console.error('Error deleting movie:', error);
+            displayFlash(error.message, 'error');
+        }
+    };
+
+    // Initial Load
+    if (checkAdminLoginState()) {
+        loadMovies();
+    }
+
+</script>
+</body>
+</html>
