@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Showtimes - Multiflex Cinemas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-zinc-900 text-white font-inter flex flex-col min-h-screen">
+
+<header class="bg-black bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <a href="index.html" class="text-3xl font-oswald font-bold text-red-600">MULTIFLEX</a>
+      <nav class="hidden md:flex space-x-6 items-center">
+        <a href="index.html" class="text-gray-300 hover:text-red-500 transition duration-300">MAIN</a>
+        <a href="booking_history.html" class="text-gray-300 hover:text-red-500 transition duration-300">MY BOOKINGS</a>
+        <a href="view_showtimes.html" class="text-red-500 font-semibold transition duration-300">SCHEDULES</a>
+        <a href="booking_page.html" class="text-gray-300 hover:text-red-500 transition duration-300">TICKETS</a>
+      </nav>
+      <div class="hidden md:flex items-center space-x-4">
+        <a href="login.html" id="user-action-btn-header" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+          SIGN IN
+        </a>
+        <div id="user-profile-dropdown-header" class="hidden relative">
+          <button id="user-avatar-btn-header" class="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center">
+            <i class="fas fa-user"></i>
+          </button>
+          <div id="dropdown-menu-header" class="hidden absolute right-0 mt-2 w-48 bg-zinc-800 rounded-md shadow-lg py-1 z-50">
+            <a href="user_profile.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">My Profile</a>
+            <a href="booking_history.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">My Bookings</a>
+            <a href="#" id="logout-btn-header" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+          </div>
+        </div>
+      </div>
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-300 hover:text-red-500 focus:outline-none"><i class="fas fa-bars text-2xl"></i></button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-90">
+    <a href="index.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">MAIN</a>
+    <a href="view_showtimes.html" class="block py-3 px-4 text-sm text-red-500 font-semibold hover:bg-zinc-700">SCHEDULES</a>
+    <a href="booking_page.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">TICKETS</a>
+    <div class="py-3 px-4">
+      <a href="login.html" id="mobile-user-action-btn-header" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 text-center block">SIGN IN</a>
+      <div id="mobile-user-profile-dropdown-header" class="hidden mt-2">
+        <a href="user_profile.html" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">My Profile</a>
+        <a href="booking_history.html" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">My Bookings</a>
+        <a href="#" id="mobile-logout-btn-header" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 md:pt-32">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl sm:text-4xl font-bold font-oswald text-white mb-8 text-center border-b border-zinc-700 pb-4">
+      Movie Schedules
+    </h1>
+
+    <div id="flash-message-container" class="mb-6"></div>
+
+    <div class="bg-zinc-800 p-4 sm:p-6 rounded-xl shadow-lg mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+        <div>
+          <label for="filter-date" class="block text-sm font-medium text-gray-300 mb-1">Filter by Date:</label>
+          <input type="date" id="filter-date" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500 appearance-none" style="color-scheme: dark;">
+        </div>
+        <div>
+          <label for="filter-movie" class="block text-sm font-medium text-gray-300 mb-1">Filter by Movie:</label>
+          <select id="filter-movie" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-red-500 focus:border-red-500">
+            <option value="">All Movies</option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-4 text-right">
+        <button id="apply-filters-btn" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 text-sm">
+          <i class="fas fa-filter mr-2"></i>Apply Filters
+        </button>
+        <button id="reset-all-filters-btn" class="ml-2 bg-zinc-600 hover:bg-zinc-500 text-gray-200 font-semibold py-2 px-4 rounded-lg transition duration-300 text-sm">
+          <i class="fas fa-undo mr-2"></i>Reset Filters
+        </button>
+      </div>
+    </div>
+
+    <div id="all-showtimes-list" class="space-y-8">
+      <p id="loading-all-showtimes-msg" class="text-center text-gray-400 py-10">Loading showtimes... <i class="fas fa-spinner fa-spin ml-2"></i></p>
+    </div>
+  </div>
+</main>
+
+<footer class="bg-black py-8 border-t border-zinc-800 mt-auto">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+    <a href="index.html" class="text-2xl font-oswald font-bold text-red-600 mb-2 inline-block">MULTIFLEX</a>
+    <p class="text-xs">&copy; <span id="footer-year"></span> Multiflex Cinemas. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // Basic Mobile Menu Toggle & Year
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+  }
+
+  // DOM Elements
+  const allShowtimesList = document.getElementById('all-showtimes-list');
+  const loadingAllShowtimesMsg = document.getElementById('loading-all-showtimes-msg');
+  const filterDateInput = document.getElementById('filter-date');
+  const filterMovieSelect = document.getElementById('filter-movie');
+  const applyFiltersBtn = document.getElementById('apply-filters-btn');
+  const resetFiltersBtn = document.getElementById('reset-all-filters-btn');
+  const flashMessageContainer = document.getElementById('flash-message-container');
+
+
+  const API_BASE_URL = '/api';
+  let allMoviesCache = {}; // { movieId: movieObject }
+  let allShowtimesData = []; // Store all fetched showtimes
+
+  // --- Utility Functions ---
+  const displayFlash = (message, type = 'error') => {
+      flashMessageContainer.innerHTML = `<div class="p-3 mb-4 rounded-md text-sm ${type === 'success' ? 'bg-green-600 text-green-100' : 'bg-red-600 text-red-100'}">${message}</div>`;
+      setTimeout(() => flashMessageContainer.innerHTML = '', 5000);
+  };
+
+  // Format YYYY-MM-DD for date input default
+  const getTodayDateString = () => {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+  };
+  if(filterDateInput) filterDateInput.value = getTodayDateString();
+
+
+  // --- Header Auth State (Simplified) ---
+  /* ... (Copy header auth JS from previous pages) ... */
+  const userActionButtonHeader = document.getElementById('user-action-btn-header');
+  const mobileUserActionButtonHeader = document.getElementById('mobile-user-action-btn-header');
+  const userProfileDropdownHeader = document.getElementById('user-profile-dropdown-header');
+  const mobileUserProfileDropdownHeader = document.getElementById('mobile-user-profile-dropdown-header');
+  const userAvatarButtonHeader = document.getElementById('user-avatar-btn-header');
+  const dropdownMenuHeader = document.getElementById('dropdown-menu-header');
+  const logoutButtonHeader = document.getElementById('logout-btn-header');
+  const mobileLogoutButtonHeader = document.getElementById('mobile-logout-btn-header');
+
+  const checkLoginStateHeader = () => {
+      const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+      if (loggedInUser) {
+          if(userActionButtonHeader) userActionButtonHeader.classList.add('hidden');
+          if(mobileUserActionButtonHeader) mobileUserActionButtonHeader.classList.add('hidden');
+          if(userProfileDropdownHeader) userProfileDropdownHeader.classList.remove('hidden');
+          if(mobileUserProfileDropdownHeader) mobileUserProfileDropdownHeader.classList.remove('hidden');
+          if(userAvatarButtonHeader && loggedInUser.username) {
+              userAvatarButtonHeader.innerHTML = `<span class="text-lg font-semibold">${loggedInUser.username.charAt(0).toUpperCase()}</span>`;
+          }
+      } else {
+          if(userActionButtonHeader) userActionButtonHeader.classList.remove('hidden');
+          if(mobileUserActionButtonHeader) mobileUserActionButtonHeader.classList.remove('hidden');
+          if(userProfileDropdownHeader) userProfileDropdownHeader.classList.add('hidden');
+          if(mobileUserProfileDropdownHeader) mobileUserProfileDropdownHeader.classList.add('hidden');
+      }
+  };
+  const handleLogoutHeader = () => {
+      localStorage.removeItem('loggedInUser');
+      checkLoginStateHeader();
+  };
+  if (userAvatarButtonHeader && dropdownMenuHeader) {
+      userAvatarButtonHeader.addEventListener('click', (e) => {e.stopPropagation(); dropdownMenuHeader.classList.toggle('hidden');});
+  }
+  document.addEventListener('click', (e) => {
+      if (userAvatarButtonHeader && dropdownMenuHeader && !userAvatarButtonHeader.contains(e.target) && !dropdownMenuHeader.contains(e.target)) {
+          dropdownMenuHeader.classList.add('hidden');
+      }
+  });
+  if(logoutButtonHeader) logoutButtonHeader.addEventListener('click', handleLogoutHeader);
+  if(mobileLogoutButtonHeader) mobileLogoutButtonHeader.addEventListener('click', handleLogoutHeader);
+  // --- End Header Auth State ---
+
+  // Load Movies for Filter Dropdown
+  const loadMoviesForFilter = async () => {
+      try {
+          const response = await fetch(`${API_BASE_URL}/movies`);
+          if (!response.ok) throw new Error('Failed to load movies for filter.');
+          const movies = await response.json();
+          filterMovieSelect.innerHTML = '<option value="">All Movies</option>';
+          movies.forEach(movie => {
+              allMoviesCache[movie.movieId] = movie; // Cache full movie object
+              const option = document.createElement('option');
+              option.value = movie.movieId;
+              option.textContent = movie.title;
+              filterMovieSelect.appendChild(option);
+          });
+      } catch (error) {
+          console.error(error);
+          filterMovieSelect.innerHTML = '<option value="">Error loading movies</option>';
+      }
+  };
+
+  // Load All Showtimes
+  const loadAllShowtimes = async () => {
+      loadingAllShowtimesMsg.classList.remove('hidden');
+      allShowtimesList.innerHTML = '';
+      try {
+          const response = await fetch(`${API_BASE_URL}/showtimes`);
+          if (!response.ok) throw new Error('Failed to load showtimes.');
+          allShowtimesData = await response.json();
+          applyCurrentFilters(); // Render with initial filters (e.g., today's date)
+      } catch (error) {
+          console.error(error);
+          displayFlash(error.message, 'error');
+          allShowtimesList.innerHTML = `<p class="text-center text-red-400 py-10">${error.message}</p>`;
+      } finally {
+          loadingAllShowtimesMsg.classList.add('hidden');
+      }
+  };
+
+  // Apply filters and render
+  const applyCurrentFilters = () => {
+      const selectedDate = filterDateInput.value; // YYYY-MM-DD
+      const selectedMovieId = filterMovieSelect.value;
+
+      let filteredShowtimes = allShowtimesData;
+
+      if (selectedDate) {
+          filteredShowtimes = filteredShowtimes.filter(st => {
+              const showtimeDate = new Date(st.dateTime).toISOString().split('T')[0];
+              return showtimeDate === selectedDate;
+          });
+      }
+      if (selectedMovieId) {
+          filteredShowtimes = filteredShowtimes.filter(st => st.movieId === selectedMovieId);
+      }
+      renderGroupedShowtimes(filteredShowtimes);
+  };
+
+
+  // Render Showtimes, Grouped by Movie
+  const renderGroupedShowtimes = (showtimes) => {
+      if (showtimes.length === 0) {
+          allShowtimesList.innerHTML = '<p class="text-center text-gray-400 py-10">No showtimes match your criteria.</p>';
+          return;
+      }
+
+      // Group by movie
+      const showtimesByMovie = showtimes.reduce((acc, st) => {
+          if (!acc[st.movieId]) {
+              acc[st.movieId] = [];
+          }
+          acc[st.movieId].push(st);
+          return acc;
+      }, {});
+
+      let html = '';
+      for (const movieId in showtimesByMovie) {
+          const movie = allMoviesCache[movieId];
+          if (!movie) continue; // Skip if movie details not found in cache
+
+          html += `
+              <div class="movie-showtime-group bg-zinc-800 p-6 rounded-lg shadow-lg">
+                  <div class="flex items-start space-x-4 mb-4">
+                      <img src="${movie.posterUrl || `https://placehold.co/100x150/4a5568/ffffff?text=${encodeURIComponent(movie.title)}`}" alt="${movie.title}" class="w-20 sm:w-24 rounded object-cover aspect-[2/3]" onerror="this.onerror=null;this.src='https://placehold.co/100x150/718096/ffffff?text=N/A';">
+                      <div>
+                          <h3 class="text-xl sm:text-2xl font-oswald font-semibold text-red-500 hover:underline">
+                              <a href="movie_details.html?id=${movie.movieId}">${movie.title}</a>
+                          </h3>
+                          <p class="text-xs text-gray-400">${movie.genre || 'N/A'} | ${movie.duration ? movie.duration + ' min' : 'N/A'} | ${movie.rating || 'N/A'}</p>
+                      </div>
+                  </div>
+                  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          `;
+          showtimesByMovie[movieId]
+              .sort((a,b) => new Date(a.dateTime) - new Date(b.dateTime)) // Sort times for each movie
+              .forEach(st => {
+              const time = new Date(st.dateTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+              html += `
+                  <a href="booking_page.html?movieId=${st.movieId}&showtimeId=${st.showtimeId}"
+                     class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-3 rounded-md text-center transition duration-300">
+                      ${time} <span class="block text-xs opacity-75">${st.screenOrAuditorium}</span>
+                  </a>`;
+          });
+          html += `</div></div>`;
+      }
+      allShowtimesList.innerHTML = html || '<p class="text-center text-gray-400 py-10">No showtimes available for the selected filters.</p>';
+  };
+
+  // Event Listeners for filters
+  if(applyFiltersBtn) applyFiltersBtn.addEventListener('click', applyCurrentFilters);
+  if(resetFiltersBtn) resetFiltersBtn.addEventListener('click', () => {
+      filterDateInput.value = getTodayDateString();
+      filterMovieSelect.value = "";
+      applyCurrentFilters();
+  });
+
+
+  // Initial Load
+  async function initializePage() {
+      checkLoginStateHeader();
+      await loadMoviesForFilter(); // Load movies for dropdown first
+      loadAllShowtimes();      // Then load all showtimes and apply initial filter (today's date)
+  }
+  initializePage();
+
+</script>
+</body>
+</html>

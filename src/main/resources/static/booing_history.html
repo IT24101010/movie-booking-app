@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - Multiflex Cinemas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    .highlight-booking {
+        animation: highlightAnimation 2s ease-out;
+    }
+    @keyframes highlightAnimation {
+        0% { background-color: rgba(239, 68, 68, 0.3); /* red-500 with opacity */ }
+        100% { background-color: transparent; }
+    }
+  </style>
+</head>
+<body class="bg-zinc-900 text-white font-inter flex flex-col min-h-screen">
+
+<header class="bg-black bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <a href="index.html" class="text-3xl font-oswald font-bold text-red-600">MULTIFLEX</a>
+      <nav class="hidden md:flex space-x-6 items-center">
+        <a href="index.html" class="text-gray-300 hover:text-red-500 transition duration-300">MAIN</a>
+        <a href="booking_history.html" class="text-red-500 font-semibold transition duration-300">MY BOOKINGS</a>
+        <a href="view_showtimes.html" class="text-gray-300 hover:text-red-500 transition duration-300">SCHEDULES</a>
+        <a href="booking_page.html" class="text-gray-300 hover:text-red-500 transition duration-300">TICKETS</a>
+      </nav>
+      <div class="hidden md:flex items-center space-x-4">
+        <a href="login.html" id="user-action-btn-header" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+          SIGN IN
+        </a>
+        <div id="user-profile-dropdown-header" class="hidden relative">
+          <button id="user-avatar-btn-header" class="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center">
+            <i class="fas fa-user"></i>
+          </button>
+          <div id="dropdown-menu-header" class="hidden absolute right-0 mt-2 w-48 bg-zinc-800 rounded-md shadow-lg py-1 z-50">
+            <a href="user_profile.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">My Profile</a>
+            <a href="booking_history.html" class="block px-4 py-2 text-sm text-red-500 font-semibold hover:bg-zinc-700">My Bookings</a>
+            <a href="#" id="logout-btn-header" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+          </div>
+        </div>
+      </div>
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-300 hover:text-red-500 focus:outline-none"><i class="fas fa-bars text-2xl"></i></button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-90">
+    <a href="index.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">MAIN</a>
+    <a href="index.html#schedules" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">SCHEDULES</a>
+    <a href="booking_page.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">TICKETS</a>
+    <div class="py-3 px-4">
+      <a href="login.html" id="mobile-user-action-btn-header" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 text-center block">SIGN IN</a>
+      <div id="mobile-user-profile-dropdown-header" class="hidden mt-2">
+        <a href="user_profile.html" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">My Profile</a>
+        <a href="booking_history.html" class="block py-2 text-sm text-red-500 font-semibold hover:bg-zinc-700">My Bookings</a>
+        <a href="#" id="mobile-logout-btn-header" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 md:pt-32">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl sm:text-4xl font-bold font-oswald text-white mb-8 text-center border-b border-zinc-700 pb-4">
+      My Booking History
+    </h1>
+
+    <div id="flash-message-container" class="mb-6"></div>
+
+    <div id="booking-history-list" class="space-y-6">
+      <p id="loading-bookings-msg" class="text-center text-gray-400 py-10">Loading your bookings... <i class="fas fa-spinner fa-spin ml-2"></i></p>
+    </div>
+  </div>
+</main>
+
+<footer class="bg-black py-8 border-t border-zinc-800 mt-auto">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+    <a href="index.html" class="text-2xl font-oswald font-bold text-red-600 mb-2 inline-block">MULTIFLEX</a>
+    <p class="text-xs">&copy; <span id="footer-year"></span> Multiflex Cinemas. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script>
+  // Basic Mobile Menu Toggle & Year
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+  }
+
+  // DOM Elements
+  const bookingHistoryList = document.getElementById('booking-history-list');
+  const loadingBookingsMsg = document.getElementById('loading-bookings-msg');
+  const flashMessageContainer = document.getElementById('flash-message-container');
+
+  const API_BASE_URL = '/api';
+  let allMoviesCache = {}; // Cache for movie titles {movieId: "Title"}
+  let allShowtimesCache = {}; // Cache for showtime details {showtimeId: {dateTime, screen, movieId}}
+
+  // --- Utility Functions ---
+  const displayFlash = (message, type = 'error') => {
+      flashMessageContainer.innerHTML = `<div class="p-3 mb-4 rounded-md text-sm ${type === 'success' ? 'bg-green-600 text-green-100' : 'bg-red-600 text-red-100'}">${message}</div>`;
+      setTimeout(() => flashMessageContainer.innerHTML = '', 5000);
+  };
+
+  // --- Header Auth State (Simplified) ---
+  const userActionButtonHeader = document.getElementById('user-action-btn-header');
+  /* ... (rest of header auth JS, same as booking_page.html) ... */
+  const mobileUserActionButtonHeader = document.getElementById('mobile-user-action-btn-header');
+  const userProfileDropdownHeader = document.getElementById('user-profile-dropdown-header');
+  const mobileUserProfileDropdownHeader = document.getElementById('mobile-user-profile-dropdown-header');
+  const userAvatarButtonHeader = document.getElementById('user-avatar-btn-header');
+  const dropdownMenuHeader = document.getElementById('dropdown-menu-header');
+  const logoutButtonHeader = document.getElementById('logout-btn-header');
+  const mobileLogoutButtonHeader = document.getElementById('mobile-logout-btn-header');
+
+  const checkLoginStateHeader = () => {
+      const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+      if (!loggedInUser) {
+          displayFlash('Please log in to view your booking history.', 'error');
+          setTimeout(() => window.location.href = 'login.html', 2000);
+          return false;
+      }
+      if (userActionButtonHeader) userActionButtonHeader.classList.add('hidden');
+      if (mobileUserActionButtonHeader) mobileUserActionButtonHeader.classList.add('hidden');
+      if (userProfileDropdownHeader) userProfileDropdownHeader.classList.remove('hidden');
+      if (mobileUserProfileDropdownHeader) mobileUserProfileDropdownHeader.classList.remove('hidden');
+      if (userAvatarButtonHeader && loggedInUser.username) {
+          userAvatarButtonHeader.innerHTML = `<span class="text-lg font-semibold">${loggedInUser.username.charAt(0).toUpperCase()}</span>`;
+      }
+       // Highlight "My Bookings" if on this page
+      dropdownMenuHeader.querySelectorAll('a').forEach(link => {
+          if (link.getAttribute('href') === 'booking_history.html') {
+              link.classList.add('font-semibold', 'text-red-500');
+          } else {
+              link.classList.remove('font-semibold', 'text-red-500');
+          }
+      });
+      return true;
+  };
+  const handleLogoutHeader = () => {
+      localStorage.removeItem('loggedInUser');
+      checkLoginStateHeader(); // Will trigger redirect
+  };
+  if (userAvatarButtonHeader && dropdownMenuHeader) {
+      userAvatarButtonHeader.addEventListener('click', (e) => {e.stopPropagation(); dropdownMenuHeader.classList.toggle('hidden');});
+  }
+  document.addEventListener('click', (e) => {
+      if (userAvatarButtonHeader && dropdownMenuHeader && !userAvatarButtonHeader.contains(e.target) && !dropdownMenuHeader.contains(e.target)) {
+          dropdownMenuHeader.classList.add('hidden');
+      }
+  });
+  if(logoutButtonHeader) logoutButtonHeader.addEventListener('click', handleLogoutHeader);
+  if(mobileLogoutButtonHeader) mobileLogoutButtonHeader.addEventListener('click', handleLogoutHeader);
+  // --- End Header Auth State ---
+
+   // Pre-fetch movies and showtimes for display purposes
+  const preloadRelatedData = async () => {
+      try {
+          const [moviesRes, showtimesRes] = await Promise.all([
+              fetch(`${API_BASE_URL}/movies`),
+              fetch(`${API_BASE_URL}/showtimes`) // Fetch all showtimes to build cache
+          ]);
+
+          if (moviesRes.ok) {
+              const movies = await moviesRes.json();
+              movies.forEach(movie => allMoviesCache[movie.movieId] = movie.title);
+          } else { console.warn("Failed to load movie cache for booking history."); }
+
+          if (showtimesRes.ok) {
+              const showtimes = await showtimesRes.json();
+              showtimes.forEach(st => allShowtimesCache[st.showtimeId] = {
+                  dateTime: st.dateTime,
+                  screen: st.screenOrAuditorium,
+                  movieId: st.movieId
+              });
+          } else { console.warn("Failed to load showtime cache for booking history.");}
+      } catch (error) {
+          console.error("Error preloading related data for booking history:", error);
+      }
+  };
+
+
+  // Load Booking History
+  const loadBookingHistory = async () => {
+      const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+      if (!loggedInUser || !loggedInUser.userId) {
+          loadingBookingsMsg.textContent = 'Please log in to view your bookings.';
+          return;
+      }
+
+      try {
+          await preloadRelatedData(); // Wait for cache to be built
+
+          const response = await fetch(`${API_BASE_URL}/bookings/user/${loggedInUser.userId}`);
+          if (!response.ok) throw new Error('Failed to load booking history.');
+          const bookings = await response.json();
+          renderBookingHistory(bookings);
+      } catch (error) {
+          console.error(error);
+          displayFlash(error.message, 'error');
+          bookingHistoryList.innerHTML = `<p class="text-center text-red-400 py-10">${error.message}</p>`;
+      } finally {
+          loadingBookingsMsg.classList.add('hidden');
+      }
+  };
+
+  const renderBookingHistory = (bookings) => {
+      if (bookings.length === 0) {
+          bookingHistoryList.innerHTML = '<p class="text-center text-gray-400 py-10">You have no bookings yet.</p>';
+          return;
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const highlightedBookingId = urlParams.get('highlight');
+
+      bookingHistoryList.innerHTML = bookings.sort((a,b) => new Date(b.bookingTimestamp) - new Date(a.bookingTimestamp)) // Sort by most recent
+          .map(booking => {
+          const showtimeDetails = allShowtimesCache[booking.showtimeId] || { dateTime: 'N/A', screen: 'N/A', movieId: null };
+          const movieTitle = showtimeDetails.movieId ? (allMoviesCache[showtimeDetails.movieId] || 'Unknown Movie') : 'Unknown Movie';
+
+          const formattedShowtime = showtimeDetails.dateTime !== 'N/A'
+              ? new Date(showtimeDetails.dateTime).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+              : 'Details not available';
+
+          const formattedBookedOn = new Date(booking.bookingTimestamp).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+          const seats = booking.seatsBooked && booking.seatsBooked.length > 0 ? booking.seatsBooked.join(', ') : booking.numberOfSeats + ' ticket(s)';
+          const isHighlighted = booking.bookingId === highlightedBookingId ? 'highlight-booking' : '';
+
+          // Check if showtime has passed
+          const showtimeDate = showtimeDetails.dateTime !== 'N/A' ? new Date(showtimeDetails.dateTime) : null;
+          const canCancel = showtimeDate ? showtimeDate > new Date() : false; // Allow cancellation only if showtime is in the future
+
+
+          return `
+              <div class="booking-item bg-zinc-800 p-6 rounded-lg shadow-lg ${isHighlighted}" data-booking-id="${booking.bookingId}">
+                  <div class="md:flex justify-between items-start">
+                      <div>
+                          <h3 class="text-xl font-oswald font-semibold text-red-500 mb-1">${movieTitle}</h3>
+                          <p class="text-sm text-gray-400 mb-1">Showtime: ${formattedShowtime}</p>
+                          <p class="text-sm text-gray-400 mb-1">Screen: ${showtimeDetails.screen || 'N/A'}</p>
+                          <p class="text-sm text-gray-400 mb-1">Seats: ${seats}</p>
+                      </div>
+                      <div class="mt-4 md:mt-0 md:text-right">
+                          <p class="text-lg font-semibold text-white">$${booking.totalPrice.toFixed(2)}</p>
+                          <p class="text-xs text-gray-500">Booked on: ${formattedBookedOn}</p>
+                          <p class="text-xs text-gray-500 mt-1">Booking ID: ${booking.bookingId.substring(0,12)}...</p>
+                      </div>
+                  </div>
+                  <div class="mt-4 border-t border-zinc-700 pt-4 flex justify-end">
+                      ${canCancel ?
+                          `<button class="cancel-btn bg-orange-600 hover:bg-orange-700 text-white text-xs font-medium py-2 px-3 rounded-md transition duration-300" data-booking-id="${booking.bookingId}">
+                              <i class="fas fa-ban mr-1"></i> Cancel Booking
+                           </button>`
+                          :
+                          `<span class="text-xs text-gray-500 italic">This showtime has passed or cancellation is not available.</span>`
+                      }
+                  </div>
+              </div>
+          `;
+      }).join('');
+
+      bookingHistoryList.querySelectorAll('.cancel-btn').forEach(btn => {
+          btn.addEventListener('click', handleCancelBooking);
+      });
+  };
+
+  const handleCancelBooking = async (event) => {
+      const bookingId = event.target.dataset.bookingId;
+      if (!confirm(`Are you sure you want to cancel booking ID: ${bookingId}?`)) return;
+
+      event.target.disabled = true;
+      event.target.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Cancelling...';
+
+      try {
+          const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}/cancel`, { method: 'PUT' });
+          if (!response.ok) {
+              const errorData = await response.json().catch(() => ({}));
+              throw new Error(errorData.message || 'Failed to cancel booking.');
+          }
+          displayFlash('Booking cancelled successfully!', 'success');
+          loadBookingHistory(); // Refresh the list
+      } catch (error) {
+          console.error('Error cancelling booking:', error);
+          displayFlash(error.message, 'error');
+          event.target.disabled = false;
+          event.target.innerHTML = '<i class="fas fa-ban mr-1"></i> Cancel Booking';
+      }
+  };
+
+  // Initial Load
+  if (checkLoginStateHeader()) {
+      loadBookingHistory();
+  }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Multiflex Cinemas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-zinc-900 text-white font-inter flex flex-col min-h-screen">
+
+<header class="bg-black bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <a href="index.html" class="text-3xl font-oswald font-bold text-red-600">MULTIFLEX</a>
+            <span class="text-xl font-oswald text-gray-400 hidden md:inline">ADMIN PANEL</span>
+            <nav class="hidden md:flex space-x-6 items-center">
+                <a href="index.html" class="text-gray-300 hover:text-red-500 transition duration-300">View Site</a>
+            </nav>
+            <div class="hidden md:flex items-center space-x-4">
+                <div id="admin-profile-dropdown-header" class="hidden relative">
+                    <button id="admin-avatar-btn-header" class="w-10 h-10 rounded-full bg-red-700 text-white flex items-center justify-center ring-2 ring-red-500">
+                        <i class="fas fa-shield-halved"></i> </button>
+                    <div id="admin-dropdown-menu-header" class="hidden absolute right-0 mt-2 w-48 bg-zinc-800 rounded-md shadow-lg py-1 z-50">
+                        <span id="admin-username-display" class="block px-4 py-2 text-sm text-gray-400 italic">Admin User</span>
+                        <a href="#" id="admin-logout-btn-header" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+                    </div>
+                </div>
+                <a href="login.html" id="admin-login-btn-header" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+                    ADMIN LOGIN </a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-300 hover:text-red-500 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-90">
+        <a href="index.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">View Site</a>
+        <div class="py-3 px-4">
+            <a href="login.html" id="mobile-admin-login-btn-header" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 text-center block">
+                ADMIN LOGIN
+            </a>
+            <div id="mobile-admin-profile-dropdown-header" class="hidden mt-2">
+                <span id="mobile-admin-username-display" class="block py-2 text-sm text-gray-400 italic text-center">Admin User</span>
+                <a href="#" id="mobile-admin-logout-btn-header" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700 text-center">Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 md:pt-32">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl sm:text-5xl font-bold font-oswald text-white">
+            Administrator Dashboard
+        </h1>
+        <p class="text-gray-400 mt-2">Manage your cinema operations efficiently.</p>
+    </div>
+
+    <div id="flash-message-container" class="mb-6 max-w-3xl mx-auto"></div>
+    <div id="admin-content-area">
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="bg-zinc-800 p-6 rounded-lg shadow-lg">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-red-500 bg-opacity-20 text-red-500 mr-4">
+                        <i class="fas fa-film fa-2x"></i>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold" id="stats-total-movies">0</p>
+                        <p class="text-gray-400 text-sm">Total Movies</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-zinc-800 p-6 rounded-lg shadow-lg">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-sky-500 bg-opacity-20 text-sky-500 mr-4">
+                        <i class="fas fa-calendar-alt fa-2x"></i>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold" id="stats-total-showtimes">0</p>
+                        <p class="text-gray-400 text-sm">Total Showtimes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-zinc-800 p-6 rounded-lg shadow-lg">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-emerald-500 bg-opacity-20 text-emerald-500 mr-4">
+                        <i class="fas fa-ticket-alt fa-2x"></i>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold" id="stats-total-bookings">0</p>
+                        <p class="text-gray-400 text-sm">Total Bookings</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-zinc-800 p-6 rounded-lg shadow-lg">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-amber-500 bg-opacity-20 text-amber-500 mr-4">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold" id="stats-total-users">0</p>
+                        <p class="text-gray-400 text-sm">Registered Users</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <a href="admin_manage_movies.html" class="management-card bg-zinc-800 p-8 rounded-lg shadow-xl hover:shadow-red-500/30 hover:ring-2 hover:ring-red-500 transition-all duration-300 transform hover:-translate-y-1">
+                <div class="flex items-center justify-center mb-6 text-red-500">
+                    <i class="fas fa-clapperboard fa-3x"></i>
+                </div>
+                <h2 class="text-2xl font-oswald font-semibold text-center mb-2">Movie Management</h2>
+                <p class="text-gray-400 text-sm text-center">Add new movies, edit details, and manage the movie catalog.</p>
+            </a>
+
+            <a href="admin_manage_showtimes.html" class="management-card bg-zinc-800 p-8 rounded-lg shadow-xl hover:shadow-sky-500/30 hover:ring-2 hover:ring-sky-500 transition-all duration-300 transform hover:-translate-y-1">
+                <div class="flex items-center justify-center mb-6 text-sky-500">
+                    <i class="fas fa-clock fa-3x"></i>
+                </div>
+                <h2 class="text-2xl font-oswald font-semibold text-center mb-2">Showtime Management</h2>
+                <p class="text-gray-400 text-sm text-center">Create, update, and remove showtimes for movies.</p>
+            </a>
+
+            <a href="admin_manage_bookings.html" class="management-card bg-zinc-800 p-8 rounded-lg shadow-xl hover:shadow-emerald-500/30 hover:ring-2 hover:ring-emerald-500 transition-all duration-300 transform hover:-translate-y-1">
+                <div class="flex items-center justify-center mb-6 text-emerald-500">
+                    <i class="fas fa-receipt fa-3x"></i>
+                </div>
+                <h2 class="text-2xl font-oswald font-semibold text-center mb-2">Booking Management</h2>
+                <p class="text-gray-400 text-sm text-center">View all bookings, search, and manage booking records.</p>
+            </a>
+
+            <a href="admin_manage_users.html" class="management-card bg-zinc-800 p-8 rounded-lg shadow-xl hover:shadow-amber-500/30 hover:ring-2 hover:ring-amber-500 transition-all duration-300 transform hover:-translate-y-1">
+                <div class="flex items-center justify-center mb-6 text-amber-500">
+                    <i class="fas fa-user-cog fa-3x"></i>
+                </div>
+                <h2 class="text-2xl font-oswald font-semibold text-center mb-2">User Management</h2>
+                <p class="text-gray-400 text-sm text-center">View user accounts, manage roles, and handle user data.</p>
+            </a>
+
+            <a href="admin_manage_admins.html" class="management-card bg-zinc-800 p-8 rounded-lg shadow-xl hover:shadow-purple-500/30 hover:ring-2 hover:ring-purple-500 transition-all duration-300 transform hover:-translate-y-1">
+                <div class="flex items-center justify-center mb-6 text-purple-500">
+                    <i class="fas fa-user-shield fa-3x"></i>
+                </div>
+                <h2 class="text-2xl font-oswald font-semibold text-center mb-2">Admin Accounts</h2>
+                <p class="text-gray-400 text-sm text-center">Manage administrator accounts and their permissions.</p>
+            </a>
+
+        </section>
+    </div>
+</main>
+
+<footer class="bg-black py-8 border-t border-zinc-800 mt-auto">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+        <p class="text-xs">&copy; <span id="footer-year"></span> Multiflex Cinemas Admin Panel.</p>
+    </div>
+</footer>
+
+<script>
+    // Basic Mobile Menu Toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    const API_BASE_URL = '/api'; // Adjust as needed
+    const flashMessageContainer = document.getElementById('flash-message-container');
+    const adminContentArea = document.getElementById('admin-content-area');
+
+    const displayFlashMessage = (message, type = 'success', container) => {
+        const flashDiv = document.createElement('div');
+        flashDiv.className = `p-3 rounded-md text-sm ${type === 'success' ? 'bg-green-600 text-green-100' : 'bg-red-600 text-red-100'}`;
+        flashDiv.textContent = message;
+        container.innerHTML = ''; // Clear previous messages
+        container.appendChild(flashDiv);
+        setTimeout(() => {
+            flashDiv.style.transition = 'opacity 0.5s ease';
+            flashDiv.style.opacity = '0';
+             setTimeout(() => {
+                if (container.contains(flashDiv)) {
+                     container.removeChild(flashDiv);
+                }
+            }, 500);
+        }, 5000);
+    };
+
+
+    // Admin Auth State & Header Update
+    const adminLoginBtnHeader = document.getElementById('admin-login-btn-header');
+    const mobileAdminLoginBtnHeader = document.getElementById('mobile-admin-login-btn-header');
+    const adminProfileDropdownHeader = document.getElementById('admin-profile-dropdown-header');
+    const mobileAdminProfileDropdownHeader = document.getElementById('mobile-admin-profile-dropdown-header');
+    const adminAvatarBtnHeader = document.getElementById('admin-avatar-btn-header');
+    const adminDropdownMenuHeader = document.getElementById('admin-dropdown-menu-header');
+    const adminLogoutBtnHeader = document.getElementById('admin-logout-btn-header');
+    const mobileAdminLogoutBtnHeader = document.getElementById('mobile-admin-logout-btn-header');
+    const adminUsernameDisplay = document.getElementById('admin-username-display');
+    const mobileAdminUsernameDisplay = document.getElementById('mobile-admin-username-display');
+
+
+    const checkAdminLoginState = () => {
+        // For this project, we'll assume an admin logs in via a separate flow
+        // and their details (including a role or flag) are stored in localStorage.
+        const loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin')); // Use 'loggedInAdmin'
+
+        if (loggedInAdmin && (loggedInAdmin.role === 'ADMIN' || loggedInAdmin.adminRole)) { // Check for admin role
+            if(adminLoginBtnHeader) adminLoginBtnHeader.classList.add('hidden');
+            if(mobileAdminLoginBtnHeader) mobileAdminLoginBtnHeader.classList.add('hidden');
+
+            if(adminProfileDropdownHeader) adminProfileDropdownHeader.classList.remove('hidden');
+            if(mobileAdminProfileDropdownHeader) mobileAdminProfileDropdownHeader.classList.remove('hidden');
+
+            if(adminUsernameDisplay && loggedInAdmin.username) adminUsernameDisplay.textContent = loggedInAdmin.username;
+            if(mobileAdminUsernameDisplay && loggedInAdmin.username) mobileAdminUsernameDisplay.textContent = loggedInAdmin.username;
+            if(adminContentArea) adminContentArea.classList.remove('hidden'); // Show admin content
+        } else {
+            // Not an admin or not logged in as admin
+            if(adminLoginBtnHeader) adminLoginBtnHeader.classList.remove('hidden');
+            if(mobileAdminLoginBtnHeader) mobileAdminLoginBtnHeader.classList.remove('hidden');
+
+            if(adminProfileDropdownHeader) adminProfileDropdownHeader.classList.add('hidden');
+            if(mobileAdminProfileDropdownHeader) mobileAdminProfileDropdownHeader.classList.add('hidden');
+
+            // Hide admin content and show access denied message
+            if(adminContentArea) {
+                adminContentArea.innerHTML = `
+                    <div class="text-center py-10 bg-zinc-800 rounded-lg shadow-xl">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
+                        <h2 class="text-3xl font-oswald text-white mb-3">Access Denied</h2>
+                        <p class="text-gray-400 mb-6">You do not have permission to view this page. Please log in as an administrator.</p>
+                        <a href="admin_login.html" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300">
+                            Admin Login
+                        </a>
+                    </div>`;
+            }
+             // Optional: Redirect to admin login if not an admin
+            // displayFlashMessage('Access Denied. Please log in as an administrator.', 'error', flashMessageContainer);
+            // setTimeout(() => { window.location.href = 'admin_login.html'; }, 2000); // Redirect if preferred
+        }
+    };
+
+    const handleAdminLogout = () => {
+        localStorage.removeItem('loggedInAdmin'); // Use 'loggedInAdmin'
+        localStorage.removeItem('adminAuthToken'); // If using tokens
+        checkAdminLoginState(); // This will hide content and show login button
+        displayFlashMessage('Admin logged out successfully.', 'success', flashMessageContainer);
+         // Optionally redirect to admin login page or site homepage
+        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+    };
+
+    if (adminAvatarBtnHeader && adminDropdownMenuHeader) {
+        adminAvatarBtnHeader.addEventListener('click', (e) => {
+            e.stopPropagation();
+            adminDropdownMenuHeader.classList.toggle('hidden');
+        });
+    }
+    document.addEventListener('click', (e) => {
+        if (adminAvatarBtnHeader && adminDropdownMenuHeader && !adminAvatarBtnHeader.contains(e.target) && !adminDropdownMenuHeader.contains(e.target)) {
+            adminDropdownMenuHeader.classList.add('hidden');
+        }
+    });
+
+    if(adminLogoutBtnHeader) adminLogoutBtnHeader.addEventListener('click', handleAdminLogout);
+    if(mobileAdminLogoutBtnHeader) mobileAdminLogoutBtnHeader.addEventListener('click', handleAdminLogout);
+
+    // Fetch Dashboard Stats (Example)
+    const fetchDashboardStats = async () => {
+        try {
+            // Replace with actual API calls
+            // const moviesCount = (await (await fetch(`${API_BASE_URL}/movies/count`)).json()).count;
+            // const showtimesCount = (await (await fetch(`${API_BASE_URL}/showtimes/count`)).json()).count;
+            // const bookingsCount = (await (await fetch(`${API_BASE_URL}/bookings/count`)).json()).count;
+            // const usersCount = (await (await fetch(`${API_BASE_URL}/users/count`)).json()).count;
+
+            // Mock data for now:
+            const moviesCount = (await (await fetch(`${API_BASE_URL}/movies`)).json()).length;
+            const showtimesCount = (await (await fetch(`${API_BASE_URL}/showtimes`)).json()).length;
+            const bookingsCount = (await (await fetch(`${API_BASE_URL}/bookings`)).json()).length; // Assuming admin can get all
+            const usersCount = (await (await fetch(`${API_BASE_URL}/users`)).json()).length; // Assuming admin can get all
+
+            document.getElementById('stats-total-movies').textContent = moviesCount || 0;
+            document.getElementById('stats-total-showtimes').textContent = showtimesCount || 0;
+            document.getElementById('stats-total-bookings').textContent = bookingsCount || 0;
+            document.getElementById('stats-total-users').textContent = usersCount || 0;
+
+        } catch (error) {
+            console.error("Error fetching dashboard stats:", error);
+            // Silently fail or show a small error for stats
+        }
+    };
+
+
+    // Initial Load
+    checkAdminLoginState();
+    // Only fetch stats if admin content is visible (i.e., admin is logged in)
+    const loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin'));
+    if (loggedInAdmin && (loggedInAdmin.role === 'ADMIN' || loggedInAdmin.adminRole)) {
+        fetchDashboardStats();
+    }
+
+
+</script>
+</body>
+</html>
+

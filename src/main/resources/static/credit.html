@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Credits - Multiflex Cinemas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* Additional styles specific to this page if needed */
+    .credit-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    .credit-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(239, 68, 68, 0.1), 0 6px 6px rgba(239, 68, 68, 0.1); /* Red glow */
+    }
+    .sliit-logo-placeholder { /* Simple placeholder if no actual logo URL */
+        width: 80px;
+        height: 80px;
+        background-color: #4A5568; /* zinc-600 */
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin: 0 auto 1rem auto;
+        border: 2px solid #ef4444; /* red-500 */
+    }
+  </style>
+</head>
+<body class="bg-zinc-900 text-white font-inter flex flex-col min-h-screen">
+
+<header class="bg-black bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <a href="index.html" class="text-3xl font-oswald font-bold text-red-600">MULTIFLEX</a>
+      <nav class="hidden md:flex space-x-6 items-center">
+        <a href="index.html" class="text-gray-300 hover:text-red-500 transition duration-300">MAIN</a>
+        <a href="view_showtimes.html" class="text-gray-300 hover:text-red-500 transition duration-300">SCHEDULES</a>
+        <a href="booking_page.html" class="text-gray-300 hover:text-red-500 transition duration-300">TICKETS</a>
+        <a href="credit.html" class="text-red-500 font-semibold transition duration-300">CREDITS</a>
+      </nav>
+      <div class="hidden md:flex items-center space-x-4">
+        <a href="login.html" id="user-action-btn-header" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+          SIGN IN
+        </a>
+        <div id="user-profile-dropdown-header" class="hidden relative">
+          <button id="user-avatar-btn-header" class="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center">
+            <i class="fas fa-user"></i>
+          </button>
+          <div id="dropdown-menu-header" class="hidden absolute right-0 mt-2 w-48 bg-zinc-800 rounded-md shadow-lg py-1 z-50">
+            <a href="user_profile.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">My Profile</a>
+            <a href="booking_history.html" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">My Bookings</a>
+            <a href="#" id="logout-btn-header" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+          </div>
+        </div>
+      </div>
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-300 hover:text-red-500 focus:outline-none"><i class="fas fa-bars text-2xl"></i></button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-90">
+    <a href="index.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">MAIN</a>
+    <a href="view_showtimes.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">SCHEDULES</a>
+    <a href="booking_page.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">TICKETS</a>
+    <a href="credit.html" class="block py-3 px-4 text-sm text-red-500 font-semibold hover:bg-zinc-700">CREDITS</a>
+    <div class="py-3 px-4">
+      <a href="login.html" id="mobile-user-action-btn-header" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 text-center block">SIGN IN</a>
+      <div id="mobile-user-profile-dropdown-header" class="hidden mt-2">
+        <a href="user_profile.html" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">My Profile</a>
+        <a href="booking_history.html" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">My Bookings</a>
+        <a href="#" id="mobile-logout-btn-header" class="block py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 md:pt-32">
+  <div class="max-w-4xl mx-auto text-center">
+    <h1 class="text-4xl sm:text-5xl font-bold font-oswald text-red-500 mb-4">PROJECT CREDITS</h1>
+    <p class="text-lg text-gray-300 mb-10">A heartfelt thank you to everyone who contributed to the making of this Movie Ticket Booking System.</p>
+  </div>
+
+
+  <div class="text-center mb-10">
+    <h2 class="text-3xl font-oswald text-white mb-1">Meet the Team</h2>
+    <p class="text-xl font-bold text-red-500 mb-6">Group: PGN15</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="credit-card bg-zinc-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="w-24 h-24 rounded-full bg-zinc-700 mx-auto flex items-center justify-center mb-4 text-3xl text-red-400">
+        <i class="fas fa-user-astronaut"></i> </div>
+      <h4 class="text-xl font-semibold text-white mb-1">De Silva T.H.H.D</h4>
+      <p class="text-sm text-gray-400">Team Member</p>
+    </div>
+
+    <div class="credit-card bg-zinc-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="w-24 h-24 rounded-full bg-zinc-700 mx-auto flex items-center justify-center mb-4 text-3xl text-sky-400">
+        <i class="fas fa-user-ninja"></i>
+      </div>
+      <h4 class="text-xl font-semibold text-white mb-1">Nuwanjith A.Α.Ν</h4> <p class="text-sm text-gray-400">Team Member</p>
+    </div>
+
+    <div class="credit-card bg-zinc-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="w-24 h-24 rounded-full bg-zinc-700 mx-auto flex items-center justify-center mb-4 text-3xl text-emerald-400">
+        <i class="fas fa-user-secret"></i>
+      </div>
+      <h4 class="text-xl font-semibold text-white mb-1">Amarasinghe Y.S.C</h4>
+      <p class="text-sm text-gray-400">Team Member</p>
+    </div>
+
+    <div class="credit-card bg-zinc-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="w-24 h-24 rounded-full bg-zinc-700 mx-auto flex items-center justify-center mb-4 text-3xl text-amber-400">
+        <i class="fas fa-user-graduate"></i>
+      </div>
+      <h4 class="text-xl font-semibold text-white mb-1">Senadi K.A.D</h4>
+      <p class="text-sm text-gray-400">Team Member</p>
+    </div>
+
+    <div class="credit-card bg-zinc-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="w-24 h-24 rounded-full bg-zinc-700 mx-auto flex items-center justify-center mb-4 text-3xl text-purple-400">
+        <i class="fas fa-user-tie"></i>
+      </div>
+      <h4 class="text-xl font-semibold text-white mb-1">Sathsarani R.D.S</h4>
+      <p class="text-sm text-gray-400">Team Member</p>
+    </div>
+
+    <div class="credit-card bg-zinc-800 p-6 rounded-lg shadow-lg text-center">
+      <div class="w-24 h-24 rounded-full bg-zinc-700 mx-auto flex items-center justify-center mb-4 text-3xl text-pink-400">
+        <i class="fas fa-user-md"></i> </div>
+      <h4 class="text-xl font-semibold text-white mb-1">Udwattha B.H.K.G</h4>
+      <p class="text-sm text-gray-400">Team Member</p>
+    </div>
+  </div>
+
+
+  <div class="bg-zinc-800 p-6 rounded-xl shadow-xl mt-12 border-t-2 border-red-600">
+    <h3 class="text-xl font-oswald text-red-400 mb-4 text-center">Project Context</h3>
+    <p class="text-sm text-gray-400 text-center leading-relaxed">
+      This project was undertaken by first-year, second-semester students from the Faculty of Computing at the
+      <strong class="text-gray-200">Sri Lanka Institute of Information Technology (SLIIT)</strong>.
+      It serves as a practical application of concepts learned in our
+      <strong class="text-gray-200">Object-Oriented Programming</strong> and
+      <strong class="text-gray-200">Data Structures and Algorithms</strong> modules.
+    </p>
+  </div>
+
+
+
+
+  <div class="text-center mt-12 py-8 border-t border-zinc-700">
+    <p class="text-gray-500">This project was developed as part of our academic curriculum, applying concepts from our studies to create a functional web application.</p>
+    <p class="text-gray-500 mt-1">We hope you enjoy using Multiflex Cinemas!</p>
+  </div>
+
+</main>
+
+<footer class="bg-black py-8 border-t border-zinc-800 mt-auto">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+    <a href="index.html" class="text-2xl font-oswald font-bold text-red-600 mb-2 inline-block">MULTIFLEX</a>
+    <p class="text-xs">&copy; <span id="footer-year"></span> Multiflex Cinemas. Developed by PGN15.</p>
+  </div>
+</footer>
+
+<script>
+  // Basic Mobile Menu Toggle
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+      });
+  }
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  // Header Auth State (Simplified - for consistency if user is logged in)
+  const userActionButtonHeader = document.getElementById('user-action-btn-header');
+  const mobileUserActionButtonHeader = document.getElementById('mobile-user-action-btn-header');
+  const userProfileDropdownHeader = document.getElementById('user-profile-dropdown-header');
+  const mobileUserProfileDropdownHeader = document.getElementById('mobile-user-profile-dropdown-header');
+  const userAvatarButtonHeader = document.getElementById('user-avatar-btn-header');
+  const dropdownMenuHeader = document.getElementById('dropdown-menu-header');
+  const logoutButtonHeader = document.getElementById('logout-btn-header');
+  const mobileLogoutButtonHeader = document.getElementById('mobile-logout-btn-header');
+
+  const checkLoginStateHeader = () => {
+      const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+      if (loggedInUser) {
+          if(userActionButtonHeader) userActionButtonHeader.classList.add('hidden');
+          if(mobileUserActionButtonHeader) mobileUserActionButtonHeader.classList.add('hidden');
+          if(userProfileDropdownHeader) userProfileDropdownHeader.classList.remove('hidden');
+          if(mobileUserProfileDropdownHeader) mobileUserProfileDropdownHeader.classList.remove('hidden');
+          if(userAvatarButtonHeader && loggedInUser.username) {
+              userAvatarButtonHeader.innerHTML = `<span class="text-lg font-semibold">${loggedInUser.username.charAt(0).toUpperCase()}</span>`;
+          }
+           // Highlight "Credits" if on this page
+          const navLinks = document.querySelectorAll('header nav a, #mobile-menu a');
+          navLinks.forEach(link => {
+              if (link.getAttribute('href') === 'credit.html') {
+                  link.classList.remove('text-gray-300');
+                  link.classList.add('text-red-500', 'font-semibold');
+              } else {
+                  link.classList.add('text-gray-300');
+                  link.classList.remove('text-red-500', 'font-semibold');
+              }
+          });
+
+
+      } else {
+          if(userActionButtonHeader) userActionButtonHeader.classList.remove('hidden');
+          if(mobileUserActionButtonHeader) mobileUserActionButtonHeader.classList.remove('hidden');
+          if(userProfileDropdownHeader) userProfileDropdownHeader.classList.add('hidden');
+          if(mobileUserProfileDropdownHeader) mobileUserProfileDropdownHeader.classList.add('hidden');
+      }
+  };
+  const handleLogoutHeader = () => {
+      localStorage.removeItem('loggedInUser');
+      localStorage.removeItem('authToken');
+      checkLoginStateHeader();
+      // Optionally redirect to login or home
+      // window.location.href = 'login.html';
+  };
+
+  if (userAvatarButtonHeader && dropdownMenuHeader) {
+      userAvatarButtonHeader.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownMenuHeader.classList.toggle('hidden');
+      });
+  }
+  document.addEventListener('click', (e) => {
+      if (userAvatarButtonHeader && dropdownMenuHeader && !userAvatarButtonHeader.contains(e.target) && !dropdownMenuHeader.contains(e.target)) {
+          dropdownMenuHeader.classList.add('hidden');
+      }
+  });
+  if(logoutButtonHeader) logoutButtonHeader.addEventListener('click', handleLogoutHeader);
+  if(mobileLogoutButtonHeader) mobileLogoutButtonHeader.addEventListener('click', handleLogoutHeader);
+
+  checkLoginStateHeader(); // Check login state on page load
+</script>
+</body>
+</html>

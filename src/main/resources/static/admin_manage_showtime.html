@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Showtimes - Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-zinc-900 text-white font-inter flex flex-col min-h-screen">
+
+<header class="bg-black bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <a href="admin_dashboard.html" class="text-3xl font-oswald font-bold text-red-600">MULTIFLEX <span class="text-lg text-gray-400">Admin</span></a>
+      <nav class="hidden md:flex space-x-6 items-center">
+        <a href="admin_dashboard.html" class="text-gray-300 hover:text-red-500 transition duration-300">Dashboard</a>
+        <a href="index.html" class="text-gray-300 hover:text-red-500 transition duration-300">View Site</a>
+      </nav>
+      <div class="hidden md:flex items-center space-x-4">
+        <div id="admin-profile-dropdown-header" class="hidden relative">
+          <button id="admin-avatar-btn-header" class="w-10 h-10 rounded-full bg-red-700 text-white flex items-center justify-center ring-2 ring-red-500"><i class="fas fa-shield-halved"></i></button>
+          <div id="admin-dropdown-menu-header" class="hidden absolute right-0 mt-2 w-48 bg-zinc-800 rounded-md shadow-lg py-1 z-50">
+            <span id="admin-username-display" class="block px-4 py-2 text-sm text-gray-400 italic">Admin</span>
+            <a href="#" id="admin-logout-btn-header" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+          </div>
+        </div>
+        <a href="admin_login.html" id="admin-login-btn-header" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">ADMIN LOGIN</a>
+      </div>
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-300 hover:text-red-500 focus:outline-none"><i class="fas fa-bars text-2xl"></i></button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-90">
+    <a href="admin_dashboard.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">Dashboard</a>
+    <a href="index.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">View Site</a>
+  </div>
+</header>
+
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 md:pt-32">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl sm:text-4xl font-bold font-oswald text-white">Manage Showtimes</h1>
+    <button id="add-showtime-btn" class="bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 flex items-center">
+      <i class="fas fa-plus mr-2"></i> Add New Showtime
+    </button>
+  </div>
+
+  <div id="flash-message-container" class="mb-6"></div>
+  <div id="admin-showtimes-content-area" class="bg-zinc-800 p-2 sm:p-6 rounded-xl shadow-2xl overflow-x-auto">
+    <div class="mb-4">
+      <label for="filter-movie-select" class="block text-sm font-medium text-gray-300 mb-1">Filter by Movie:</label>
+      <select id="filter-movie-select" class="w-full sm:w-1/2 lg:w-1/3 bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-sky-500 focus:border-sky-500">
+        <option value="">All Movies</option>
+      </select>
+    </div>
+
+    <table class="min-w-full divide-y divide-zinc-700">
+      <thead class="bg-zinc-700">
+      <tr>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Movie Title</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Date & Time</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Screen</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Total Seats</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Available Seats</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+      </tr>
+      </thead>
+      <tbody id="showtimes-table-body" class="bg-zinc-800 divide-y divide-zinc-700">
+      <tr><td colspan="6" class="text-center py-10 text-gray-400" id="loading-showtimes-indicator">Loading showtimes... <i class="fas fa-spinner fa-spin ml-2"></i></td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<div id="showtime-modal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-[60] hidden p-4">
+  <div class="bg-zinc-800 p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h2 id="modal-title" class="text-2xl font-oswald font-semibold">Add New Showtime</h2>
+      <button id="close-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+    </div>
+    <form id="showtime-form" class="space-y-4">
+      <input type="hidden" id="showtime-id" name="showtimeId">
+      <div>
+        <label for="showtime-movie" class="block text-sm font-medium text-gray-300 mb-1">Movie</label>
+        <select id="showtime-movie" name="movieId" required class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-sky-500 focus:border-sky-500">
+          <option value="" disabled selected>Select a movie</option>
+        </select>
+      </div>
+      <div>
+        <label for="showtime-datetime" class="block text-sm font-medium text-gray-300 mb-1">Date & Time</label>
+        <input type="datetime-local" id="showtime-datetime" name="dateTime" required class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-sky-500 focus:border-sky-500">
+      </div>
+      <div>
+        <label for="showtime-screen" class="block text-sm font-medium text-gray-300 mb-1">Screen/Auditorium</label>
+        <input type="text" id="showtime-screen" name="screenOrAuditorium" required class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-sky-500 focus:border-sky-500" placeholder="e.g., Screen 1, Auditorium A">
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="showtime-total-seats" class="block text-sm font-medium text-gray-300 mb-1">Total Seats</label>
+          <input type="number" id="showtime-total-seats" name="totalSeats" required min="1" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-sky-500 focus:border-sky-500">
+        </div>
+        <div>
+          <label for="showtime-available-seats" class="block text-sm font-medium text-gray-300 mb-1">Available Seats (for edit)</label>
+          <input type="number" id="showtime-available-seats" name="availableSeats" min="0" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-sky-500 focus:border-sky-500" readonly>
+          <p class="text-xs text-gray-500 mt-1">Available seats are auto-set to total seats on creation. Editable if needed.</p>
+        </div>
+      </div>
+
+      <div id="modal-flash-message" class="mt-2"></div>
+
+      <div class="flex justify-end space-x-3 pt-3">
+        <button type="button" id="cancel-modal-btn" class="bg-zinc-600 hover:bg-zinc-500 text-gray-200 py-2 px-4 rounded-md text-sm">Cancel</button>
+        <button type="submit" id="save-showtime-btn" class="bg-sky-600 hover:bg-sky-700 text-white py-2 px-4 rounded-md text-sm">Save Showtime</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="bg-black py-8 border-t border-zinc-800 mt-auto">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+    <p class="text-xs">&copy; <span id="footer-year"></span> Multiflex Cinemas Admin Panel.</p>
+  </div>
+</footer>
+
+<script>
+  // Basic Mobile Menu Toggle & Year
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+  }
+
+  // DOM Elements
+  const showtimesTableBody = document.getElementById('showtimes-table-body');
+  const addShowtimeBtn = document.getElementById('add-showtime-btn');
+  const showtimeModal = document.getElementById('showtime-modal');
+  const closeModalBtn = document.getElementById('close-modal-btn');
+  const cancelModalBtn = document.getElementById('cancel-modal-btn');
+  const showtimeForm = document.getElementById('showtime-form');
+  const modalTitle = document.getElementById('modal-title');
+  const showtimeIdInput = document.getElementById('showtime-id');
+  const movieSelect = document.getElementById('showtime-movie');
+  const filterMovieSelect = document.getElementById('filter-movie-select');
+  const availableSeatsInput = document.getElementById('showtime-available-seats');
+  const totalSeatsInput = document.getElementById('showtime-total-seats');
+  const flashMessageContainer = document.getElementById('flash-message-container');
+  const modalFlashMessageContainer = document.getElementById('modal-flash-message');
+  const loadingShowtimesIndicator = document.getElementById('loading-showtimes-indicator');
+
+  const API_SHOWTIMES_URL = '/api/showtimes';
+  const API_MOVIES_URL = '/api/movies';
+  let allMoviesData = []; // To store movie list for dropdowns
+
+  // --- Admin Auth & Header --- (Same as admin_manage_movies.html)
+  const adminLoginBtnHeader = document.getElementById('admin-login-btn-header');
+  const adminProfileDropdownHeader = document.getElementById('admin-profile-dropdown-header');
+  /* ... (rest of admin auth JS, same as in admin_manage_movies.html) ... */
+  const adminAvatarBtnHeader = document.getElementById('admin-avatar-btn-header');
+  const adminDropdownMenuHeader = document.getElementById('admin-dropdown-menu-header');
+  const adminLogoutBtnHeader = document.getElementById('admin-logout-btn-header');
+  const adminUsernameDisplay = document.getElementById('admin-username-display');
+
+  const checkAdminLoginState = () => {
+      const loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin'));
+      if (loggedInAdmin && (loggedInAdmin.role === 'ADMIN' || loggedInAdmin.adminRole)) {
+          if(adminLoginBtnHeader) adminLoginBtnHeader.classList.add('hidden');
+          if(adminProfileDropdownHeader) adminProfileDropdownHeader.classList.remove('hidden');
+          if(adminUsernameDisplay && loggedInAdmin.username) adminUsernameDisplay.textContent = loggedInAdmin.username;
+          return true;
+      } else {
+          if(adminLoginBtnHeader) adminLoginBtnHeader.classList.remove('hidden');
+          if(adminProfileDropdownHeader) adminProfileDropdownHeader.classList.add('hidden');
+          document.getElementById('admin-showtimes-content-area').innerHTML = `<div class="text-center py-10 bg-zinc-700 rounded-lg"><p class="text-xl text-red-400">Access Denied. Redirecting to login...</p></div>`;
+          setTimeout(() => { window.location.href = 'admin_login.html'; }, 2000);
+          return false;
+      }
+  };
+  const handleAdminLogout = () => {
+      localStorage.removeItem('loggedInAdmin');
+      window.location.href = 'admin_login.html';
+  };
+  if (adminAvatarBtnHeader && adminDropdownMenuHeader) {
+      adminAvatarBtnHeader.addEventListener('click', (e) => {
+          e.stopPropagation();
+          adminDropdownMenuHeader.classList.toggle('hidden');
+      });
+  }
+  document.addEventListener('click', (e) => {
+      if (adminAvatarBtnHeader && adminDropdownMenuHeader && !adminAvatarBtnHeader.contains(e.target) && !adminDropdownMenuHeader.contains(e.target)) {
+          adminDropdownMenuHeader.classList.add('hidden');
+      }
+  });
+  if(adminLogoutBtnHeader) adminLogoutBtnHeader.addEventListener('click', handleAdminLogout);
+  // --- End Admin Auth ---
+
+  const displayFlash = (message, type = 'success', container = flashMessageContainer) => {
+      container.innerHTML = `<div class="p-3 rounded-md text-sm ${type === 'success' ? 'bg-green-600 text-green-100' : 'bg-red-600 text-red-100'}">${message}</div>`;
+      setTimeout(() => container.innerHTML = '', 5000);
+  };
+
+  // Fetch movies for select dropdowns
+  const loadMoviesForSelect = async () => {
+      try {
+          const response = await fetch(API_MOVIES_URL);
+          if (!response.ok) throw new Error('Failed to fetch movies for dropdown.');
+          allMoviesData = await response.json();
+
+          movieSelect.innerHTML = '<option value="" disabled selected>Select a movie</option>'; // Reset
+          filterMovieSelect.innerHTML = '<option value="">All Movies</option>'; // Reset filter
+
+          allMoviesData.forEach(movie => {
+              const option = document.createElement('option');
+              option.value = movie.movieId;
+              option.textContent = movie.title;
+              movieSelect.appendChild(option.cloneNode(true));
+              filterMovieSelect.appendChild(option);
+          });
+      } catch (error) {
+          console.error('Error loading movies for select:', error);
+          displayFlash(error.message, 'error');
+      }
+  };
+
+  // Format LocalDateTime for input[type=datetime-local]
+  // Input: ISO string (e.g., "2024-05-10T14:30:00")
+  // Output: "YYYY-MM-DDTHH:mm"
+  const formatDateTimeForInput = (isoDateTimeString) => {
+      if (!isoDateTimeString) return '';
+      try {
+          const date = new Date(isoDateTimeString);
+          // Pad month, day, hours, minutes with leading zeros if necessary
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+          const day = String(date.getDate()).padStart(2, '0');
+          const hours = String(date.getHours()).padStart(2, '0');
+          const minutes = String(date.getMinutes()).padStart(2, '0');
+          return `${year}-${month}-${day}T${hours}:${minutes}`;
+      } catch (e) {
+          console.error("Error formatting date time:", e);
+          return ""; // Fallback
+      }
+  };
+
+
+  // Fetch and display showtimes
+  const loadShowtimes = async (filterMovieId = '') => {
+      if (!checkAdminLoginState()) return;
+      loadingShowtimesIndicator.classList.remove('hidden');
+      showtimesTableBody.innerHTML = '<tr><td colspan="6" class="text-center py-10 text-gray-400">Loading showtimes... <i class="fas fa-spinner fa-spin ml-2"></i></td></tr>';
+
+      let url = API_SHOWTIMES_URL;
+      if (filterMovieId) {
+          url = `${API_SHOWTIMES_URL}/movie/${filterMovieId}`;
+      }
+
+      try {
+          const response = await fetch(url);
+          if (!response.ok) throw new Error('Failed to fetch showtimes.');
+          const showtimes = await response.json();
+          renderShowtimesTable(showtimes);
+      } catch (error) {
+          console.error('Error loading showtimes:', error);
+          showtimesTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-red-400">${error.message}</td></tr>`;
+      } finally {
+          loadingShowtimesIndicator.classList.add('hidden');
+      }
+  };
+
+  const renderShowtimesTable = (showtimes) => {
+      if (showtimes.length === 0) {
+          showtimesTableBody.innerHTML = '<tr><td colspan="6" class="text-center py-10 text-gray-400">No showtimes found.</td></tr>';
+          return;
+      }
+      showtimesTableBody.innerHTML = showtimes.map(showtime => {
+          const movieTitle = allMoviesData.find(m => m.movieId === showtime.movieId)?.title || 'Unknown Movie';
+          const formattedDateTime = new Date(showtime.dateTime).toLocaleString('en-US', {
+              year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+          });
+          return `
+              <tr class="hover:bg-zinc-700/50 transition-colors duration-150" data-showtime-id="${showtime.showtimeId}">
+                  <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-200">${movieTitle}</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">${formattedDateTime}</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">${showtime.screenOrAuditorium || 'N/A'}</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">${showtime.totalSeats}</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">${showtime.availableSeats}</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm font-medium">
+                      <button class="edit-btn text-sky-400 hover:text-sky-300 mr-3" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                      <button class="delete-btn text-red-500 hover:text-red-400" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                  </td>
+              </tr>
+          `;
+      }).join('');
+
+      showtimesTableBody.querySelectorAll('.edit-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => handleEditShowtime(e.currentTarget.closest('tr').dataset.showtimeId));
+      });
+      showtimesTableBody.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => handleDeleteShowtime(e.currentTarget.closest('tr').dataset.showtimeId));
+      });
+  };
+
+  filterMovieSelect.addEventListener('change', (e) => {
+      loadShowtimes(e.target.value);
+  });
+
+
+  // Modal handling
+  const openModalForAdd = () => {
+      showtimeForm.reset();
+      showtimeIdInput.value = '';
+      modalTitle.textContent = 'Add New Showtime';
+      availableSeatsInput.setAttribute('readonly', true); // Readonly for add
+      availableSeatsInput.value = ''; // Clear it
+      totalSeatsInput.value = '';
+      modalFlashMessageContainer.innerHTML = '';
+      showtimeModal.classList.remove('hidden');
+  };
+
+  const openModalForEdit = (showtime) => {
+      showtimeForm.reset();
+      modalTitle.textContent = 'Edit Showtime';
+      showtimeIdInput.value = showtime.showtimeId;
+      movieSelect.value = showtime.movieId;
+      document.getElementById('showtime-datetime').value = formatDateTimeForInput(showtime.dateTime);
+      document.getElementById('showtime-screen').value = showtime.screenOrAuditorium || '';
+      totalSeatsInput.value = showtime.totalSeats;
+      availableSeatsInput.value = showtime.availableSeats;
+      availableSeatsInput.removeAttribute('readonly'); // Allow edit for available seats
+      modalFlashMessageContainer.innerHTML = '';
+      showtimeModal.classList.remove('hidden');
+  };
+
+  totalSeatsInput.addEventListener('input', (e) => {
+      // When adding, if total seats changes, and it's not an edit operation (no showtimeId)
+      // then available seats should match total seats.
+      if (!showtimeIdInput.value) { // Only for new showtime
+           availableSeatsInput.value = e.target.value;
+      }
+  });
+
+
+  const closeModal = () => {
+      showtimeModal.classList.add('hidden');
+      showtimeForm.reset();
+  };
+
+  addShowtimeBtn.addEventListener('click', openModalForAdd);
+  closeModalBtn.addEventListener('click', closeModal);
+  cancelModalBtn.addEventListener('click', closeModal);
+  showtimeModal.addEventListener('click', (e) => {
+      if (e.target === showtimeModal) closeModal();
+  });
+
+  // Handle Form Submission (Add/Edit Showtime)
+  showtimeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(showtimeForm);
+      const showtimeData = {
+          movieId: formData.get('movieId'),
+          dateTime: formData.get('dateTime'), // This will be in "YYYY-MM-DDTHH:mm" format
+          screenOrAuditorium: formData.get('screenOrAuditorium'),
+          totalSeats: parseInt(formData.get('totalSeats'), 10),
+      };
+      // For edit, include showtimeId and potentially availableSeats
+      const id = showtimeIdInput.value;
+      if (id) {
+          showtimeData.showtimeId = id;
+          showtimeData.availableSeats = parseInt(formData.get('availableSeats'), 10);
+           if (showtimeData.availableSeats > showtimeData.totalSeats) {
+              displayFlash('Available seats cannot exceed total seats.', 'error', modalFlashMessageContainer);
+              return;
+          }
+      } else {
+          // For new showtime, availableSeats is typically same as totalSeats
+          showtimeData.availableSeats = showtimeData.totalSeats;
+      }
+
+
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `${API_SHOWTIMES_URL}/${id}` : API_SHOWTIMES_URL;
+
+      try {
+          const response = await fetch(url, {
+              method: method,
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(showtimeData)
+          });
+          const result = await response.json();
+          if (!response.ok) {
+              throw new Error(result.message || `Failed to ${id ? 'update' : 'add'} showtime.`);
+          }
+          displayFlash(`${id ? 'Showtime updated' : 'Showtime added'} successfully!`, 'success', modalFlashMessageContainer);
+          loadShowtimes(filterMovieSelect.value); // Refresh table
+          setTimeout(closeModal, 1500);
+      } catch (error) {
+          console.error(`Error ${id ? 'updating' : 'adding'} showtime:`, error);
+          displayFlash(error.message, 'error', modalFlashMessageContainer);
+      }
+  });
+
+  const handleEditShowtime = async (id) => {
+      try {
+          const response = await fetch(`${API_SHOWTIMES_URL}/${id}`);
+          if (!response.ok) throw new Error('Failed to fetch showtime details for editing.');
+          const showtime = await response.json();
+          openModalForEdit(showtime);
+      } catch (error) {
+          console.error('Error fetching showtime for edit:', error);
+          displayFlash(error.message, 'error');
+      }
+  };
+
+  const handleDeleteShowtime = async (id) => {
+      if (!confirm('Are you sure you want to delete this showtime?')) return;
+      try {
+          const response = await fetch(`${API_SHOWTIMES_URL}/${id}`, { method: 'DELETE' });
+           if (!response.ok && response.status !== 204) {
+              const errorData = await response.json().catch(() => ({}));
+              throw new Error(errorData.message || 'Failed to delete showtime.');
+          }
+          displayFlash('Showtime deleted successfully!', 'success');
+          loadShowtimes(filterMovieSelect.value);
+      } catch (error) {
+          console.error('Error deleting showtime:', error);
+          displayFlash(error.message, 'error');
+      }
+  };
+
+  // Initial Load
+  async function initializePage() {
+      if (checkAdminLoginState()) {
+          await loadMoviesForSelect(); // Load movies first for dropdowns
+          loadShowtimes(); // Then load showtimes
+      }
+  }
+  initializePage();
+
+</script>
+</body>
+</html>

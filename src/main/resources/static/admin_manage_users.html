@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Users - Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-zinc-900 text-white font-inter flex flex-col min-h-screen">
+
+<header class="bg-black bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <a href="admin_dashboard.html" class="text-3xl font-oswald font-bold text-red-600">MULTIFLEX <span class="text-lg text-gray-400">Admin</span></a>
+      <nav class="hidden md:flex space-x-6 items-center">
+        <a href="admin_dashboard.html" class="text-gray-300 hover:text-red-500 transition duration-300">Dashboard</a>
+        <a href="index.html" class="text-gray-300 hover:text-red-500 transition duration-300">View Site</a>
+      </nav>
+      <div class="hidden md:flex items-center space-x-4">
+        <div id="admin-profile-dropdown-header" class="hidden relative">
+          <button id="admin-avatar-btn-header" class="w-10 h-10 rounded-full bg-red-700 text-white flex items-center justify-center ring-2 ring-red-500"><i class="fas fa-shield-halved"></i></button>
+          <div id="admin-dropdown-menu-header" class="hidden absolute right-0 mt-2 w-48 bg-zinc-800 rounded-md shadow-lg py-1 z-50">
+            <span id="admin-username-display" class="block px-4 py-2 text-sm text-gray-400 italic">Admin</span>
+            <a href="#" id="admin-logout-btn-header" class="block px-4 py-2 text-sm text-gray-300 hover:bg-zinc-700">Logout</a>
+          </div>
+        </div>
+        <a href="admin_login.html" id="admin-login-btn-header" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">ADMIN LOGIN</a>
+      </div>
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-300 hover:text-red-500 focus:outline-none"><i class="fas fa-bars text-2xl"></i></button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="md:hidden hidden bg-black bg-opacity-90">
+    <a href="admin_dashboard.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">Dashboard</a>
+    <a href="index.html" class="block py-3 px-4 text-sm text-gray-300 hover:bg-zinc-700 hover:text-red-500">View Site</a>
+  </div>
+</header>
+
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 md:pt-32">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl sm:text-4xl font-bold font-oswald text-white">Manage Users</h1>
+  </div>
+
+  <div id="flash-message-container" class="mb-6"></div>
+
+  <div class="mb-6 bg-zinc-800 p-4 rounded-lg shadow">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label for="search-user-username" class="block text-sm font-medium text-gray-300 mb-1">Search by Username</label>
+        <input type="text" id="search-user-username" placeholder="Enter Username" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-amber-500 focus:border-amber-500">
+      </div>
+      <div>
+        <label for="search-user-email" class="block text-sm font-medium text-gray-300 mb-1">Search by Email</label>
+        <input type="email" id="search-user-email" placeholder="Enter Email" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-amber-500 focus:border-amber-500">
+      </div>
+    </div>
+    <div class="mt-4 text-right">
+      <button id="filter-users-btn" class="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 text-sm">
+        <i class="fas fa-search mr-2"></i>Search Users
+      </button>
+      <button id="reset-user-filter-btn" class="ml-2 bg-zinc-600 hover:bg-zinc-500 text-gray-200 font-semibold py-2 px-4 rounded-lg transition duration-300 text-sm">
+        <i class="fas fa-undo mr-2"></i>Reset
+      </button>
+    </div>
+  </div>
+
+  <div id="admin-users-content-area" class="bg-zinc-800 p-2 sm:p-6 rounded-xl shadow-2xl overflow-x-auto">
+    <table class="min-w-full divide-y divide-zinc-700">
+      <thead class="bg-zinc-700">
+      <tr>
+        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">User ID</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Username</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Email</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Contact Number</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+      </tr>
+      </thead>
+      <tbody id="users-table-body" class="bg-zinc-800 divide-y divide-zinc-700">
+      <tr><td colspan="5" class="text-center py-10 text-gray-400" id="loading-users-indicator">Loading users... <i class="fas fa-spinner fa-spin ml-2"></i></td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<div id="user-edit-modal" class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-[60] hidden p-4">
+  <div class="bg-zinc-800 p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h2 id="user-modal-title" class="text-2xl font-oswald font-semibold">Edit User Details</h2>
+      <button id="close-user-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+    </div>
+    <form id="user-edit-form" class="space-y-4">
+      <input type="hidden" id="edit-user-id" name="userId">
+      <div>
+        <label for="edit-user-username" class="block text-sm font-medium text-gray-300 mb-1">Username</label>
+        <input type="text" id="edit-user-username" name="username" required class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-amber-500 focus:border-amber-500">
+      </div>
+      <div>
+        <label for="edit-user-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+        <input type="email" id="edit-user-email" name="email" required class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-amber-500 focus:border-amber-500">
+      </div>
+      <div>
+        <label for="edit-user-contact" class="block text-sm font-medium text-gray-300 mb-1">Contact Number</label>
+        <input type="tel" id="edit-user-contact" name="contactNumber" class="w-full bg-zinc-900 border border-zinc-700 rounded-md p-2.5 text-sm focus:ring-amber-500 focus:border-amber-500">
+      </div>
+      <div id="user-modal-flash-message" class="mt-2"></div>
+      <div class="flex justify-end space-x-3 pt-3">
+        <button type="button" id="cancel-user-modal-btn" class="bg-zinc-600 hover:bg-zinc-500 text-gray-200 py-2 px-4 rounded-md text-sm">Cancel</button>
+        <button type="submit" id="save-user-btn" class="bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-md text-sm">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<footer class="bg-black py-8 border-t border-zinc-800 mt-auto">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+    <p class="text-xs">&copy; <span id="footer-year"></span> Multiflex Cinemas Admin Panel.</p>
+  </div>
+</footer>
+
+<script>
+  // Basic Mobile Menu Toggle & Year
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+  }
+
+  // DOM Elements
+  const usersTableBody = document.getElementById('users-table-body');
+  const flashMessageContainer = document.getElementById('flash-message-container');
+  const loadingUsersIndicator = document.getElementById('loading-users-indicator');
+  const searchUsernameInput = document.getElementById('search-user-username');
+  const searchEmailInput = document.getElementById('search-user-email');
+  const filterUsersBtn = document.getElementById('filter-users-btn');
+  const resetUserFilterBtn = document.getElementById('reset-user-filter-btn');
+
+  const userEditModal = document.getElementById('user-edit-modal');
+  const closeUserModalBtn = document.getElementById('close-user-modal-btn');
+  const cancelUserModalBtn = document.getElementById('cancel-user-modal-btn');
+  const userEditForm = document.getElementById('user-edit-form');
+  const userModalTitle = document.getElementById('user-modal-title');
+  const editUserIdInput = document.getElementById('edit-user-id');
+  const userModalFlash = document.getElementById('user-modal-flash-message');
+
+
+  const API_USERS_URL = '/api/users'; // Endpoint for regular users
+  let allUsersData = [];
+
+  // --- Admin Auth & Header --- (Same as other admin pages)
+  const adminLoginBtnHeader = document.getElementById('admin-login-btn-header');
+  /* ... (rest of admin auth JS) ... */
+  const adminProfileDropdownHeader = document.getElementById('admin-profile-dropdown-header');
+  const adminAvatarBtnHeader = document.getElementById('admin-avatar-btn-header');
+  const adminDropdownMenuHeader = document.getElementById('admin-dropdown-menu-header');
+  const adminLogoutBtnHeader = document.getElementById('admin-logout-btn-header');
+  const adminUsernameDisplay = document.getElementById('admin-username-display');
+
+  const checkAdminLoginState = () => {
+      const loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin'));
+      if (loggedInAdmin && (loggedInAdmin.role === 'ADMIN' || loggedInAdmin.adminRole)) {
+          if(adminLoginBtnHeader) adminLoginBtnHeader.classList.add('hidden');
+          if(adminProfileDropdownHeader) adminProfileDropdownHeader.classList.remove('hidden');
+          if(adminUsernameDisplay && loggedInAdmin.username) adminUsernameDisplay.textContent = loggedInAdmin.username;
+          return true;
+      } else {
+          if(adminLoginBtnHeader) adminLoginBtnHeader.classList.remove('hidden');
+          if(adminProfileDropdownHeader) adminProfileDropdownHeader.classList.add('hidden');
+          document.getElementById('admin-users-content-area').innerHTML = `<div class="text-center py-10 bg-zinc-700 rounded-lg"><p class="text-xl text-red-400">Access Denied. Redirecting to login...</p></div>`;
+          setTimeout(() => { window.location.href = 'admin_login.html'; }, 2000);
+          return false;
+      }
+  };
+  const handleAdminLogout = () => {
+      localStorage.removeItem('loggedInAdmin');
+      window.location.href = 'admin_login.html';
+  };
+  if (adminAvatarBtnHeader && adminDropdownMenuHeader) {
+      adminAvatarBtnHeader.addEventListener('click', (e) => {
+          e.stopPropagation();
+          adminDropdownMenuHeader.classList.toggle('hidden');
+      });
+  }
+  document.addEventListener('click', (e) => {
+      if (adminAvatarBtnHeader && adminDropdownMenuHeader && !adminAvatarBtnHeader.contains(e.target) && !adminDropdownMenuHeader.contains(e.target)) {
+          adminDropdownMenuHeader.classList.add('hidden');
+      }
+  });
+  if(adminLogoutBtnHeader) adminLogoutBtnHeader.addEventListener('click', handleAdminLogout);
+  // --- End Admin Auth ---
+
+
+  const displayFlash = (message, type = 'success', container = flashMessageContainer) => {
+      container.innerHTML = `<div class="p-3 rounded-md text-sm ${type === 'success' ? 'bg-green-600 text-green-100' : 'bg-red-600 text-red-100'}">${message}</div>`;
+      setTimeout(() => container.innerHTML = '', 5000);
+  };
+
+  // Fetch and display users
+  const loadUsers = async () => {
+      if (!checkAdminLoginState()) return;
+      loadingUsersIndicator.classList.remove('hidden');
+      usersTableBody.innerHTML = '<tr><td colspan="5" class="text-center py-10 text-gray-400">Loading users... <i class="fas fa-spinner fa-spin ml-2"></i></td></tr>';
+
+      try {
+          const response = await fetch(API_USERS_URL); // Admin endpoint to get all users
+          if (!response.ok) throw new Error('Failed to fetch users.');
+          allUsersData = await response.json();
+          renderUsersTable(allUsersData);
+      } catch (error) {
+          console.error('Error loading users:', error);
+          usersTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-red-400">${error.message}</td></tr>`;
+      } finally {
+          loadingUsersIndicator.classList.add('hidden');
+      }
+  };
+
+  const renderUsersTable = (users) => {
+      if (users.length === 0) {
+          usersTableBody.innerHTML = '<tr><td colspan="5" class="text-center py-10 text-gray-400">No users found.</td></tr>';
+          return;
+      }
+      usersTableBody.innerHTML = users.map(user => `
+          <tr class="hover:bg-zinc-700/50 transition-colors duration-150" data-user-id="${user.userId}">
+              <td class="px-4 py-3 whitespace-nowrap text-xs text-gray-400">${user.userId.substring(0,8)}...</td>
+              <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-200">${user.username}</td>
+              <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">${user.email}</td>
+              <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-400">${user.contactNumber || 'N/A'}</td>
+              <td class="px-6 py-3 whitespace-nowrap text-sm font-medium">
+                  <button class="edit-user-btn text-sky-400 hover:text-sky-300 mr-3" title="Edit User"><i class="fas fa-user-edit"></i></button>
+                  <button class="delete-user-btn text-red-500 hover:text-red-400" title="Delete User"><i class="fas fa-user-times"></i></button>
+              </td>
+          </tr>
+      `).join('');
+
+      usersTableBody.querySelectorAll('.edit-user-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => handleOpenEditUserModal(e.currentTarget.closest('tr').dataset.userId));
+      });
+      usersTableBody.querySelectorAll('.delete-user-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => handleDeleteUser(e.currentTarget.closest('tr').dataset.userId));
+      });
+  };
+
+  // Modal Handling for User Edit
+  const openUserEditModal = (user) => {
+      userEditForm.reset();
+      userModalTitle.textContent = 'Edit User Details';
+      editUserIdInput.value = user.userId;
+      document.getElementById('edit-user-username').value = user.username || '';
+      document.getElementById('edit-user-email').value = user.email || '';
+      document.getElementById('edit-user-contact').value = user.contactNumber || '';
+      userModalFlash.innerHTML = '';
+      userEditModal.classList.remove('hidden');
+  };
+
+  const closeUserEditModal = () => {
+      userEditModal.classList.add('hidden');
+      userEditForm.reset();
+  };
+
+  if(closeUserModalBtn) closeUserModalBtn.addEventListener('click', closeUserEditModal);
+  if(cancelUserModalBtn) cancelUserModalBtn.addEventListener('click', closeUserEditModal);
+  if(userEditModal) userEditModal.addEventListener('click', (e) => {
+      if (e.target === userEditModal) closeUserEditModal();
+  });
+
+  const handleOpenEditUserModal = async (userId) => {
+      try {
+          const response = await fetch(`${API_USERS_URL}/${userId}`);
+          if (!response.ok) throw new Error('Failed to fetch user details for editing.');
+          const user = await response.json();
+          openUserEditModal(user);
+      } catch (error) {
+          console.error('Error fetching user for edit:', error);
+          displayFlash(error.message, 'error');
+      }
+  };
+
+  // Handle User Edit Form Submission
+  if(userEditForm) {
+      userEditForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const userId = editUserIdInput.value;
+          if (!userId) return;
+
+          const updatedUserData = {
+              userId: userId,
+              username: document.getElementById('edit-user-username').value,
+              email: document.getElementById('edit-user-email').value,
+              contactNumber: document.getElementById('edit-user-contact').value,
+              // Admin might not change password here, or it'd need a separate mechanism
+          };
+
+          try {
+              const response = await fetch(`${API_USERS_URL}/${userId}`, {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(updatedUserData)
+              });
+              const result = await response.json();
+              if (!response.ok) {
+                  throw new Error(result.message || 'Failed to update user.');
+              }
+              displayFlash('User updated successfully!', 'success', userModalFlash);
+              loadUsers(); // Refresh table
+              setTimeout(closeUserEditModal, 1500);
+          } catch (error) {
+              console.error('Error updating user:', error);
+              displayFlash(error.message, 'error', userModalFlash);
+          }
+      });
+  }
+
+
+  // Handle Delete User
+  const handleDeleteUser = async (userId) => {
+      if (!confirm(`Are you sure you want to delete user ID: ${userId}? This may affect their bookings.`)) return;
+      try {
+          const response = await fetch(`${API_USERS_URL}/${userId}`, { method: 'DELETE' });
+          if (!response.ok && response.status !== 204) {
+               const errorData = await response.json().catch(() => ({}));
+              throw new Error(errorData.message || 'Failed to delete user.');
+          }
+          displayFlash('User deleted successfully!', 'success');
+          loadUsers(); // Refresh table
+      } catch (error) {
+          console.error('Error deleting user:', error);
+          displayFlash(error.message, 'error');
+      }
+  };
+
+  // Filter/Search Logic
+  filterUsersBtn.addEventListener('click', () => {
+      const usernameQuery = searchUsernameInput.value.trim().toLowerCase();
+      const emailQuery = searchEmailInput.value.trim().toLowerCase();
+
+      const filtered = allUsersData.filter(user =>
+          (!usernameQuery || user.username.toLowerCase().includes(usernameQuery)) &&
+          (!emailQuery || user.email.toLowerCase().includes(emailQuery))
+      );
+      renderUsersTable(filtered);
+  });
+
+  resetUserFilterBtn.addEventListener('click', () => {
+      searchUsernameInput.value = '';
+      searchEmailInput.value = '';
+      renderUsersTable(allUsersData);
+  });
+
+  // Initial Load
+  if (checkAdminLoginState()) {
+      loadUsers();
+  }
+
+</script>
+</body>
+</html>
