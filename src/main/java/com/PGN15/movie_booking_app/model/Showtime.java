@@ -1,4 +1,4 @@
-package com.hiruna.movieticketbooking.model;
+package com.PGN15.movie_booking_app.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
