@@ -1,4 +1,4 @@
-package com.PGN15.movie_booking_app.service.;
+package com.PGN15.movie_booking_app.service;
 
 import com.PGN15.movie_booking_app.model.Movie;
 import com.PGN15.movie_booking_app.repository.FileHandler;

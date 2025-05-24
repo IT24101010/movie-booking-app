@@ -1,12 +1,10 @@
-package com.hiruna.movieticketbooking.controller;
+package com.PGN15.movie_booking_app.controller;
 
-import com.hiruna.movieticketbooking.model.Showtime;
-import com.hiruna.movieticketbooking.service.MovieService;
-import com.hiruna.movieticketbooking.service.ShowtimeService;
+import com.PGN15.movie_booking_app.model.Showtime;
+import com.PGN15.movie_booking_app.service.MovieService;
+import com.PGN15.movie_booking_app.service.ShowtimeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import com.hiruna.movieticketbooking.service.BookingService;
-import com.hiruna.movieticketbooking.model.Booking;
+
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

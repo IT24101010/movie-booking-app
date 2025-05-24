@@ -1,8 +1,8 @@
-package com.hiruna.movieticketbooking.service;
+package com.PGN15.movie_booking_app.service;
 
-import com.hiruna.movieticketbooking.model.Movie;
-import com.hiruna.movieticketbooking.model.Showtime;
-import com.hiruna.movieticketbooking.repository.FileHandler;
+import com.PGN15.movie_booking_app.model.Movie;
+import com.PGN15.movie_booking_app.model.Showtime;
+import com.PGN15.movie_booking_app.repository.FileHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
